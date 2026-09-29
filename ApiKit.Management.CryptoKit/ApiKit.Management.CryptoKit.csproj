@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <AssemblyName>ApiKit.Management.CryptoKit</AssemblyName>
+    <RootNamespace>ApiKit.Management.CryptoKit</RootNamespace>
+    <CryptoKitProjectPath Condition="'$(CryptoKitProjectPath)' == ''">../CryptoKit/CryptoKit.csproj</CryptoKitProjectPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.12" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../ApiKit/ApiKit.csproj" />
+    <ProjectReference Include="$(CryptoKitProjectPath)" Condition="Exists('$(CryptoKitProjectPath)')" />
+  </ItemGroup>
+
+  <Target Name="EnsureCryptoKitProjectReference"
+          BeforeTargets="ResolveReferences"
+          Condition="!Exists('$(CryptoKitProjectPath)')">
+    <Error Text="Проект CryptoKit не найден по пути '$(CryptoKitProjectPath)'. Разместите CryptoKit рядом с solution или задайте MSBuild-свойство CryptoKitProjectPath." />
+  </Target>
+
+</Project>

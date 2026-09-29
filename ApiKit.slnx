@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="ApiKit.Management.CryptoKit/ApiKit.Management.CryptoKit.csproj" />
+  <Project Path="ApiKit.Management.Windows/ApiKit.Management.Windows.csproj" />
+  <Project Path="ApiKit/ApiKit.csproj" />
+</Solution>
