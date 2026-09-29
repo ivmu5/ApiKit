@@ -1,0 +1,3 @@
+[submodule "external/CryptoKit"]
+	path = external/CryptoKit
+	url = https://github.com/ivmu5/CryptoKit.git
