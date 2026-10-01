@@ -4,15 +4,15 @@ using Microsoft.AspNetCore.Authorization;
 namespace ApiKit.Authorization.Attributes;
 
 /// <summary>
-/// Требует явно указанное permission для доступа к endpoint.
+/// Defines the management or application behavior of require permission attribute.
 /// </summary>
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true, Inherited = true)]
 public sealed class RequirePermissionAttribute : AuthorizeAttribute
 {
     /// <summary>
-    /// Создаёт требование для указанного permission.
+    /// Initializes a new RequirePermissionAttribute instance.
     /// </summary>
-    /// <param name="permission">Требуемое permission.</param>
+    /// <param name="permission">The permission value.</param>
     public RequirePermissionAttribute(string permission)
     {
         Policy = PermissionPolicyName.ForPermission(permission);
@@ -20,26 +20,25 @@ public sealed class RequirePermissionAttribute : AuthorizeAttribute
 }
 
 /// <summary>
-/// Требует permission, автоматически сформированное
-/// по типу API-ресурса и операции.
+/// Defines the management or application behavior of require permission attribute.
 /// </summary>
-/// <typeparam name="TResource">Тип API-ресурса.</typeparam>
+/// <typeparam name="TResource">The t resource type.</typeparam>
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true, Inherited = true)]
 public sealed class RequirePermissionAttribute<TResource> : AuthorizeAttribute
 {
     /// <summary>
-    /// Создаёт требование для стандартной операции над ресурсом.
+    /// Initializes a new RequirePermissionAttribute instance.
     /// </summary>
-    /// <param name="operation">Операция над ресурсом.</param>
+    /// <param name="operation">The requested operation.</param>
     public RequirePermissionAttribute(PermissionOperation operation)
     {
         Policy = PermissionPolicyName.ForResource(typeof(TResource), operation);
     }
 
     /// <summary>
-    /// Создаёт требование для произвольной операции над ресурсом.
+    /// Initializes a new RequirePermissionAttribute instance.
     /// </summary>
-    /// <param name="operation">Имя операции.</param>
+    /// <param name="operation">The requested operation.</param>
     public RequirePermissionAttribute(string operation)
     {
         Policy = PermissionPolicyName.ForResource(typeof(TResource), operation);

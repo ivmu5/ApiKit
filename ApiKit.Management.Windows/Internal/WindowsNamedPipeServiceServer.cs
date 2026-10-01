@@ -23,6 +23,8 @@ internal sealed class WindowsNamedPipeServiceServer(
     ILogger<WindowsNamedPipeServiceServer> logger)
     : BackgroundService
 {
+    private readonly SemaphoreSlim _connectionSlots = new(64, 64);
+
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         var settings = options.Value;
@@ -41,7 +43,13 @@ internal sealed class WindowsNamedPipeServiceServer(
                     settings.ManagementPipeAccess);
 
                 await pipe.WaitForConnectionAsync(stoppingToken);
-                _ = HandleConnectionAsync(pipe, pipeName, settings.MaxMessageBytes, stoppingToken);
+                if (!_connectionSlots.Wait(0))
+                {
+                    logger.LogWarning("Management service connection limit reached for {PipeName}.", pipeName);
+                    continue;
+                }
+
+                _ = HandleLimitedConnectionAsync(pipe, pipeName, settings.MaxMessageBytes, stoppingToken);
                 pipe = null;
             }
             catch (OperationCanceledException) when (stoppingToken.IsCancellationRequested)
@@ -60,6 +68,22 @@ internal sealed class WindowsNamedPipeServiceServer(
                     await pipe.DisposeAsync();
                 }
             }
+        }
+    }
+
+    private async Task HandleLimitedConnectionAsync(
+        NamedPipeServerStream pipe,
+        string pipeName,
+        int maxMessageBytes,
+        CancellationToken stoppingToken)
+    {
+        try
+        {
+            await HandleConnectionAsync(pipe, pipeName, maxMessageBytes, stoppingToken);
+        }
+        finally
+        {
+            _connectionSlots.Release();
         }
     }
 
@@ -83,8 +107,6 @@ internal sealed class WindowsNamedPipeServiceServer(
                     pipeName,
                     WindowsManagementTransportDefaults.ManagementPurpose);
 
-                // Management Host сначала доказывает identity. До этого сервис не читает
-                // delegated claims и не выполняет management-команды.
                 var hostAuthentication = await WindowsNamedPipeChallengeResponseProtocol.VerifyIdentityAsync(
                     pipe,
                     serviceIdentity,
@@ -102,13 +124,9 @@ internal sealed class WindowsNamedPipeServiceServer(
                     hostAuthentication.Identity is null ||
                     string.IsNullOrWhiteSpace(hostAuthentication.CredentialId))
                 {
-                    // Security result уже отправлен challenge-response протоколом.
                     return;
                 }
 
-                // После проверки Host сервис подтверждает собственную identity этому же Host.
-                // Это не позволяет proxy-клиенту получить management request от Host, не доказав
-                // соответствие зарегистрированной service identity.
                 var serviceAuthentication = await WindowsNamedPipeChallengeResponseProtocol.ProveIdentityAsync(
                     pipe,
                     serviceIdentity,
@@ -161,10 +179,12 @@ internal sealed class WindowsNamedPipeServiceServer(
                     return;
                 }
 
+                using var requestTimeout = CancellationTokenSource.CreateLinkedTokenSource(stoppingToken);
+                requestTimeout.CancelAfter(TimeSpan.FromSeconds(30));
                 var request = await WindowsNamedPipeMessageSerializer.ReadAsync<WindowsNamedPipeRequest>(
                     pipe,
                     maxMessageBytes,
-                    stoppingToken);
+                    requestTimeout.Token);
 
                 if (request.ProtocolVersion != WindowsNamedPipeProtocol.Version)
                 {
@@ -180,9 +200,9 @@ internal sealed class WindowsNamedPipeServiceServer(
                 var response = request.Type switch
                 {
                     WindowsNamedPipeRequestTypes.ExecuteServiceOperation
-                        => await HandleOperationAsync(request, hostPrincipal, stoppingToken),
+                        => await HandleOperationAsync(request, stoppingToken),
                     WindowsNamedPipeRequestTypes.ExecuteServiceResource
-                        => await HandleResourceAsync(request, hostPrincipal, stoppingToken),
+                        => await HandleResourceAsync(request, stoppingToken),
                     _ => new WindowsNamedPipeResponse
                     {
                         Succeeded = false,
@@ -209,7 +229,6 @@ internal sealed class WindowsNamedPipeServiceServer(
 
     private async ValueTask<WindowsNamedPipeResponse> HandleOperationAsync(
         WindowsNamedPipeRequest request,
-        ClaimsPrincipal hostPrincipal,
         CancellationToken cancellationToken)
     {
         var payload = WindowsNamedPipeMessageSerializer.FromElement<ExecuteServiceOperationRequest>(request.Payload);
@@ -218,7 +237,12 @@ internal sealed class WindowsNamedPipeServiceServer(
             return Failure("invalid_request", "Отсутствуют параметры операции.");
         }
 
-        var delegatedPrincipal = CreateDelegatedPrincipal(payload.Claims) ?? hostPrincipal;
+        var delegatedPrincipal = CreateDelegatedPrincipal(payload.Claims);
+        if (delegatedPrincipal is null)
+        {
+            return Failure("delegation_required", "An authenticated administrative delegation is required.");
+        }
+
         var result = await operationDispatcher.ExecuteAsync(
             payload.OperationName,
             payload.Request,
@@ -230,7 +254,6 @@ internal sealed class WindowsNamedPipeServiceServer(
 
     private async ValueTask<WindowsNamedPipeResponse> HandleResourceAsync(
         WindowsNamedPipeRequest request,
-        ClaimsPrincipal hostPrincipal,
         CancellationToken cancellationToken)
     {
         var payload = WindowsNamedPipeMessageSerializer.FromElement<ExecuteServiceResourceRequest>(request.Payload);
@@ -239,7 +262,12 @@ internal sealed class WindowsNamedPipeServiceServer(
             return Failure("invalid_request", "Отсутствуют параметры CRUD-resource запроса.");
         }
 
-        var delegatedPrincipal = CreateDelegatedPrincipal(payload.Claims) ?? hostPrincipal;
+        var delegatedPrincipal = CreateDelegatedPrincipal(payload.Claims);
+        if (delegatedPrincipal is null)
+        {
+            return Failure("delegation_required", "An authenticated administrative delegation is required.");
+        }
+
         var result = await resourceDispatcher.ExecuteAsync(
             payload.ResourceName,
             payload.Operation,
@@ -253,13 +281,24 @@ internal sealed class WindowsNamedPipeServiceServer(
         return Success(result);
     }
 
-    private static ClaimsPrincipal? CreateDelegatedPrincipal(IReadOnlyList<SerializedClaim> claims)
+    internal static ClaimsPrincipal? CreateDelegatedPrincipal(IReadOnlyList<SerializedClaim>? claims)
     {
-        if (claims.Count == 0)
+        if (claims is null || claims.Count == 0 || claims.Count > 128 ||
+            claims.Any(static claim =>
+                claim is null ||
+                string.IsNullOrWhiteSpace(claim.Type) ||
+                claim.Value is null ||
+                string.IsNullOrWhiteSpace(claim.ValueType) ||
+                string.IsNullOrWhiteSpace(claim.Issuer)) ||
+            !claims.Any(static claim =>
+                claim.Type == ApiKitManagementAuthorizationDefaults.ClaimType &&
+                claim.Value == ApiKitManagementAuthorizationDefaults.AdministratorClaimValue))
         {
             return null;
         }
 
+        // Only the already authenticated Management Host may supply delegation.
+        // Do not use the Host's transport identity as the application caller.
         var identity = new ClaimsIdentity(
             claims.Select(static claim => claim.ToClaim()),
             authenticationType: "ApiKit.Management.Host");

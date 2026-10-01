@@ -20,10 +20,14 @@ internal sealed class WindowsNamedPipeManagementHostServer(
     WindowsNamedPipeManagedServiceClient serviceClient,
     IManagedServiceLifecycleController lifecycleController,
     IManagedServiceInstaller serviceInstaller,
+    WindowsManagedServiceIsolationRegistry isolationRegistry,
     IOptions<WindowsManagementHostOptions> options,
     ILogger<WindowsNamedPipeManagementHostServer> logger)
     : BackgroundService
 {
+    private readonly SemaphoreSlim _registrationConnectionSlots = new(64, 64);
+    private readonly SemaphoreSlim _administrationConnectionSlots = new(64, 64);
+
     protected override Task ExecuteAsync(CancellationToken stoppingToken)
     {
         var settings = options.Value;
@@ -53,9 +57,62 @@ internal sealed class WindowsNamedPipeManagementHostServer(
 
             try
             {
-                pipe = WindowsNamedPipeSecurityFactory.CreateServer(pipeName, access);
-                await pipe.WaitForConnectionAsync(stoppingToken);
-                _ = HandleConnectionAsync(pipe, pipeName, isAdministrationPipe, stoppingToken);
+                var isolationVersion = isolationRegistry.Version;
+                IReadOnlyCollection<string> additionalSids =
+                    !isAdministrationPipe && options.Value.UseProvisionedServiceSidAcl
+                        ? isolationRegistry.GetProvisionedServiceSids()
+                        : Array.Empty<string>();
+
+                pipe = WindowsNamedPipeSecurityFactory.CreateServer(
+                    pipeName,
+                    access,
+                    additionalSids);
+
+                if (!isAdministrationPipe && options.Value.UseProvisionedServiceSidAcl)
+                {
+                    using var waitConnectionCancellation = CancellationTokenSource.CreateLinkedTokenSource(stoppingToken);
+                    using var aclChangeCancellation = CancellationTokenSource.CreateLinkedTokenSource(stoppingToken);
+                    var waitForConnection = pipe.WaitForConnectionAsync(waitConnectionCancellation.Token);
+                    var waitForAclChange = isolationRegistry.WaitForChangeAsync(
+                        isolationVersion,
+                        aclChangeCancellation.Token);
+
+                    var completed = await Task.WhenAny(waitForConnection, waitForAclChange);
+                    if (completed == waitForAclChange)
+                    {
+                        waitConnectionCancellation.Cancel();
+
+                        try
+                        {
+                            await waitForConnection;
+                        }
+                        catch (OperationCanceledException) when (!stoppingToken.IsCancellationRequested)
+                        {
+                        }
+
+                        continue;
+                    }
+
+                    await waitForConnection;
+                    aclChangeCancellation.Cancel();
+                }
+                else
+                {
+                    await pipe.WaitForConnectionAsync(stoppingToken);
+                }
+
+                var slots = isAdministrationPipe
+                    ? _administrationConnectionSlots
+                    : _registrationConnectionSlots;
+                if (!slots.Wait(0))
+                {
+                    // Refuse excess connections instead of allocating unlimited
+                    // tasks, authentication challenges, and pipe handles.
+                    logger.LogWarning("Named Pipe {PipeName} connection limit reached.", pipeName);
+                    continue;
+                }
+
+                _ = HandleLimitedConnectionAsync(pipe, pipeName, isAdministrationPipe, slots, stoppingToken);
                 pipe = null;
             }
             catch (OperationCanceledException) when (stoppingToken.IsCancellationRequested)
@@ -74,6 +131,23 @@ internal sealed class WindowsNamedPipeManagementHostServer(
                     await pipe.DisposeAsync();
                 }
             }
+        }
+    }
+
+    private async Task HandleLimitedConnectionAsync(
+        NamedPipeServerStream pipe,
+        string pipeName,
+        bool isAdministrationPipe,
+        SemaphoreSlim slots,
+        CancellationToken stoppingToken)
+    {
+        try
+        {
+            await HandleConnectionAsync(pipe, pipeName, isAdministrationPipe, stoppingToken);
+        }
+        finally
+        {
+            slots.Release();
         }
     }
 
@@ -126,8 +200,6 @@ internal sealed class WindowsNamedPipeManagementHostServer(
         var hostIdentity = ManagementPeerIdentity.ForManagementHost(
             settings.ManagementHostPeerId);
 
-        // На registration pipe Host доказывает identity первым. Сервис не формирует
-        // собственный proof, пока не проверит trusted public key Management Host.
         var hostAuthentication = await WindowsNamedPipeChallengeResponseProtocol.ProveIdentityAsync(
             pipe,
             hostIdentity,
@@ -157,7 +229,6 @@ internal sealed class WindowsNamedPipeManagementHostServer(
             authentication.Identity is null ||
             string.IsNullOrWhiteSpace(authentication.CredentialId))
         {
-            // Security result уже отправлен challenge-response протоколом.
             return;
         }
 
@@ -233,8 +304,6 @@ internal sealed class WindowsNamedPipeManagementHostServer(
         var hostIdentity = ManagementPeerIdentity.ForManagementHost(
             settings.ManagementHostPeerId);
 
-        // Админ-панель сначала проверяет credential Host. Пока Host не доказал identity,
-        // клиент не формирует собственный proof и не передаёт административный request.
         var hostAuthentication = await WindowsNamedPipeChallengeResponseProtocol.ProveIdentityAsync(
             pipe,
             hostIdentity,
@@ -264,7 +333,6 @@ internal sealed class WindowsNamedPipeManagementHostServer(
             authentication.Identity is null ||
             string.IsNullOrWhiteSpace(authentication.CredentialId))
         {
-            // Security result уже отправлен challenge-response протоколом.
             return;
         }
 
@@ -304,7 +372,6 @@ internal sealed class WindowsNamedPipeManagementHostServer(
             return;
         }
 
-        // Management payload читается только после взаимной криптографической проверки.
         var request = await ReadRequestAsync(
             pipe,
             settings.MaxMessageBytes,
@@ -332,10 +399,12 @@ internal sealed class WindowsNamedPipeManagementHostServer(
         int maxMessageBytes,
         CancellationToken cancellationToken)
     {
+        using var requestTimeout = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+        requestTimeout.CancelAfter(TimeSpan.FromSeconds(30));
         var request = await WindowsNamedPipeMessageSerializer.ReadAsync<WindowsNamedPipeRequest>(
             pipe,
             maxMessageBytes,
-            cancellationToken);
+            requestTimeout.Token);
 
         if (request.ProtocolVersion == WindowsNamedPipeProtocol.Version)
         {

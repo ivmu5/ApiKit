@@ -8,24 +8,20 @@ using Microsoft.EntityFrameworkCore.Metadata;
 namespace ApiKit.Crud.Controllers;
 
 /// <summary>
-/// Сокращённый CRUD-контроллер, использующий EF Core entity как read/create/update API-модель.
+/// Implements generic EF Core CRUD endpoints using separate DTO models.
 /// </summary>
-/// <typeparam name="TDbContext">Тип контекста EF Core.</typeparam>
-/// <typeparam name="TEntity">Тип EF Core entity и API-модели.</typeparam>
-/// <typeparam name="TKey">Тип первичного ключа.</typeparam>
-/// <remarks>
-/// Вариант предназначен прежде всего для внутренних или простых API. Для внешнего API
-/// отдельные DTO позволяют точнее контролировать поля, доступные клиенту.
-/// </remarks>
+/// <typeparam name="TDbContext">The EF Core database context type.</typeparam>
+/// <typeparam name="TEntity">The EF Core entity type.</typeparam>
+/// <typeparam name="TKey">The primary key type.</typeparam>
 public abstract class CrudController<TDbContext, TEntity, TKey>
     : CrudController<TDbContext, TEntity, TKey, TEntity, TEntity, TEntity>
     where TDbContext : DbContext
     where TEntity : class
 {
     /// <summary>
-    /// Создаёт CRUD-контроллер, работающий непосредственно с entity.
+    /// Implements generic EF Core CRUD endpoints using separate DTO models.
     /// </summary>
-    /// <param name="dbContext">Контекст EF Core.</param>
+    /// <param name="dbContext">The db context value.</param>
     protected CrudController(TDbContext dbContext)
         : base(dbContext)
     {

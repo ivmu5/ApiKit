@@ -3,35 +3,43 @@ using ApiKit.Management.Models;
 namespace ApiKit.Management.Options;
 
 /// <summary>
-/// Переопределяет отображение и доступность автоматически обнаруженного CRUD-ресурса.
+/// Defines configuration settings for management resource options.
 /// </summary>
 public sealed class ManagementResourceOptions
 {
-    /// <summary>Указывает, должен ли ресурс публиковаться и быть доступным management plane.</summary>
+    /// <summary>
+    /// Gets or sets whether enabled is enabled.
+    /// </summary>
     public bool Enabled { get; set; } = true;
 
-    /// <summary>Техническое имя ресурса.</summary>
+    /// <summary>
+    /// Gets or sets name.
+    /// </summary>
     public string? Name { get; set; }
 
-    /// <summary>Отображаемое имя ресурса.</summary>
+    /// <summary>
+    /// Gets or sets display name.
+    /// </summary>
     public string? DisplayName { get; set; }
 
-    /// <summary>Группа ресурса в админ-панели.</summary>
+    /// <summary>
+    /// Gets or sets group name.
+    /// </summary>
     public string? GroupName { get; set; }
 
     /// <summary>
-    /// JSON-имя свойства read-модели, содержащего primary key. Если не задано,
-    /// ApiKit пытается определить стандартные Id / &lt;Entity&gt;Id соглашения.
+    /// Gets or sets key JSON name.
     /// </summary>
     public string? KeyJsonName { get; set; }
 
     /// <summary>
-    /// Разрешённые management-операции. <see langword="null"/> означает все операции,
-    /// фактически опубликованные CRUD-контроллером.
+    /// Gets or sets allowed operations.
     /// </summary>
     public ISet<ManagementResourceOperation>? AllowedOperations { get; set; }
 
-    /// <summary>Ограничивает management-доступ указанным набором CRUD-операций.</summary>
+    /// <summary>
+    /// Limits the resource to the explicitly allowed management operations.
+    /// </summary>
     public ManagementResourceOptions AllowOnly(params ManagementResourceOperation[] operations)
     {
         ArgumentNullException.ThrowIfNull(operations);

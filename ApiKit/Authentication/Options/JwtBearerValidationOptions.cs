@@ -1,32 +1,32 @@
 namespace ApiKit.Authentication.Options;
 
 /// <summary>
-/// Содержит настройки проверки входящих JWT-токенов.
+/// Defines configuration settings for JWT bearer validation options.
 /// </summary>
 public sealed class JwtBearerValidationOptions
 {
     /// <summary>
-    /// Имя секции конфигурации по умолчанию.
+    /// Gets or sets section name.
     /// </summary>
     public const string SectionName = "Jwt:Validation";
 
     /// <summary>
-    /// Допустимый издатель JWT-токена.
+    /// Gets or sets valid issuer.
     /// </summary>
     public string ValidIssuer { get; set; } = string.Empty;
 
     /// <summary>
-    /// Допустимые аудитории JWT-токена.
+    /// Gets or sets valid audiences.
     /// </summary>
     public string[] ValidAudiences { get; set; } = Array.Empty<string>();
 
     /// <summary>
-    /// Допустимое расхождение системного времени при проверке срока действия токена.
+    /// Gets or sets clock skew.
     /// </summary>
     public TimeSpan ClockSkew { get; set; } = TimeSpan.FromMinutes(1);
 
     /// <summary>
-    /// Тип claim, который ASP.NET Core использует для проверки ролей.
+    /// Gets or sets role claim type.
     /// </summary>
     public string RoleClaimType { get; set; } = "role";
 }

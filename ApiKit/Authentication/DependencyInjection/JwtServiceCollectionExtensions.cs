@@ -11,17 +11,16 @@ using Microsoft.Extensions.Options;
 namespace ApiKit.Authentication;
 
 /// <summary>
-/// Содержит методы регистрации основной JWT-инфраструктуры ApiKit.
+/// Registers and configures JWT generation and bearer authentication for ApiKit.
 /// </summary>
 public static class JwtServiceCollectionExtensions
 {
     /// <summary>
-    /// Добавляет сервис создания JWT-токенов и загружает настройки
-    /// из секции <c>Jwt:Generation</c>.
+    /// Registers API kit JWT token generation.
     /// </summary>
-    /// <param name="services">Коллекция сервисов приложения.</param>
-    /// <param name="configuration">Конфигурация приложения.</param>
-    /// <returns>Исходная коллекция сервисов.</returns>
+    /// <param name="services">The dependency injection service collection.</param>
+    /// <param name="configuration">The application configuration.</param>
+    /// <returns>The builder or service collection for further configuration.</returns>
     public static IServiceCollection AddApiKitJwtTokenGeneration(
         this IServiceCollection services,
         IConfiguration configuration)
@@ -51,20 +50,14 @@ public static class JwtServiceCollectionExtensions
     }
 
     /// <summary>
-    /// Добавляет JWT Bearer-аутентификацию и загружает настройки проверки
-    /// из секции <c>Jwt:Validation</c>.
+    /// Registers API kit JWT bearer authentication.
     /// </summary>
-    /// <param name="services">Коллекция сервисов приложения.</param>
-    /// <param name="configuration">Конфигурация приложения.</param>
-    /// <param name="authenticationScheme">Имя схемы аутентификации.</param>
-    /// <param name="setAsDefaultScheme">
-    /// Если <see langword="true"/>, схема становится схемой аутентификации по умолчанию.
-    /// </param>
-    /// <param name="configure">
-    /// Необязательная дополнительная настройка стандартного <see cref="JwtBearerOptions"/>.
-    /// Вызывается после применения настроек ApiKit и может переопределить их.
-    /// </param>
-    /// <returns>Исходная коллекция сервисов.</returns>
+    /// <param name="services">The dependency injection service collection.</param>
+    /// <param name="configuration">The application configuration.</param>
+    /// <param name="authenticationScheme">The authentication scheme name.</param>
+    /// <param name="setAsDefaultScheme">Whether to register this as the default authentication scheme.</param>
+    /// <param name="configure">An optional configuration callback.</param>
+    /// <returns>The builder or service collection for further configuration.</returns>
     public static IServiceCollection AddApiKitJwtBearerAuthentication(
         this IServiceCollection services,
         IConfiguration configuration,
@@ -107,8 +100,6 @@ public static class JwtServiceCollectionExtensions
                 IJwtValidationKeysProvider>(
                 (bearerOptions, validationOptions, keyProvider) =>
                 {
-                    // По умолчанию сохраняем исходные имена утверждений JWT. При необходимости
-                    // приложение может изменить это поведение через переданный делегат настройки.
                     bearerOptions.MapInboundClaims = false;
                     bearerOptions.TokenValidationParameters =
                         JwtTokenValidationParametersFactory.Create(

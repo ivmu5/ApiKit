@@ -1,47 +1,67 @@
 namespace ApiKit.Management.Models;
 
 /// <summary>
-/// Описывает CRUD-ресурс, доступный в сервисе.
+/// Describes a CRUD resource discovered for management operations.
 /// </summary>
 public sealed record ManagementResourceDescriptor
 {
-    /// <summary>Стабильное техническое имя ресурса.</summary>
+    /// <summary>
+    /// Gets or sets name.
+    /// </summary>
     public required string Name { get; init; }
 
-    /// <summary>Отображаемое имя ресурса.</summary>
+    /// <summary>
+    /// Gets or sets display name.
+    /// </summary>
     public required string DisplayName { get; init; }
 
-    /// <summary>Группа ресурса.</summary>
+    /// <summary>
+    /// Gets or sets group name.
+    /// </summary>
     public string? GroupName { get; init; }
 
-    /// <summary>Имя контроллера, обслуживающего ресурс.</summary>
+    /// <summary>
+    /// Gets or sets controller name.
+    /// </summary>
     public required string ControllerName { get; init; }
 
-    /// <summary>Полное имя EF entity.</summary>
+    /// <summary>
+    /// Gets or sets entity type name.
+    /// </summary>
     public required string EntityTypeName { get; init; }
 
-    /// <summary>Полное имя типа первичного ключа.</summary>
+    /// <summary>
+    /// Gets or sets key type name.
+    /// </summary>
     public required string KeyTypeName { get; init; }
 
     /// <summary>
-    /// JSON-имя свойства read-модели, содержащего ключ ресурса, если оно известно.
+    /// Gets or sets key JSON name.
     /// </summary>
     public string? KeyJsonName { get; init; }
 
-    /// <summary>Описание read-модели ресурса.</summary>
+    /// <summary>
+    /// Gets or sets read model.
+    /// </summary>
     public required ManagementModelDescriptor ReadModel { get; init; }
 
-    /// <summary>Описание модели создания ресурса.</summary>
+    /// <summary>
+    /// Gets or sets create model.
+    /// </summary>
     public required ManagementModelDescriptor CreateModel { get; init; }
 
-    /// <summary>Описание модели обновления ресурса.</summary>
+    /// <summary>
+    /// Gets or sets update model.
+    /// </summary>
     public required ManagementModelDescriptor UpdateModel { get; init; }
 
-    /// <summary>Доступные стандартные операции.</summary>
+    /// <summary>
+    /// Gets or sets operations.
+    /// </summary>
     public required IReadOnlyList<ManagementResourceOperation> Operations { get; init; }
 
     /// <summary>
-    /// Итоговые permission-имена для операций, если permission-based authorization подключена в сервисе.
+    /// Gets or sets permissions.
     /// </summary>
     public IReadOnlyDictionary<ManagementResourceOperation, string> Permissions { get; init; } =
         new Dictionary<ManagementResourceOperation, string>();

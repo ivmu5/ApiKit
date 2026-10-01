@@ -3,16 +3,20 @@ using ApiKit.Management.Models;
 namespace ApiKit.Management.Abstractions;
 
 /// <summary>
-/// Изменяемый реестр обнаруженных экземпляров управляемых сервисов.
+/// Defines the contract for i management service registry.
 /// </summary>
 public interface IManagementServiceRegistry : IManagementServiceCatalog
 {
-    /// <summary>Добавляет или обновляет регистрацию экземпляра.</summary>
+    /// <summary>
+    /// Creates or refreshes a service registration.
+    /// </summary>
     ValueTask UpsertAsync(
         ManagementServiceRegistration registration,
         CancellationToken cancellationToken = default);
 
-    /// <summary>Удаляет экземпляр по идентификатору.</summary>
+    /// <summary>
+    /// Removes async.
+    /// </summary>
     ValueTask<bool> RemoveAsync(
         string instanceId,
         CancellationToken cancellationToken = default);

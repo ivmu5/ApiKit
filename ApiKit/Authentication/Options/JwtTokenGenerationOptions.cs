@@ -1,27 +1,27 @@
 namespace ApiKit.Authentication.Options;
 
 /// <summary>
-/// Содержит настройки создания JWT-токенов.
+/// Defines configuration settings for JWT token generation options.
 /// </summary>
 public sealed class JwtTokenGenerationOptions
 {
     /// <summary>
-    /// Имя секции конфигурации по умолчанию.
+    /// Gets or sets section name.
     /// </summary>
     public const string SectionName = "Jwt:Generation";
 
     /// <summary>
-    /// Издатель создаваемых JWT-токенов.
+    /// Gets or sets issuer.
     /// </summary>
     public string Issuer { get; set; } = string.Empty;
 
     /// <summary>
-    /// Аудитория создаваемых JWT-токенов.
+    /// Gets or sets audience.
     /// </summary>
     public string Audience { get; set; } = string.Empty;
 
     /// <summary>
-    /// Время жизни JWT-токена по умолчанию.
+    /// Gets or sets default lifetime.
     /// </summary>
     public TimeSpan DefaultLifetime { get; set; } = TimeSpan.FromMinutes(15);
 }

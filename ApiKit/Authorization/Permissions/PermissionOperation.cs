@@ -1,28 +1,27 @@
 namespace ApiKit.Authorization.Permissions;
 
 /// <summary>
-/// Определяет стандартные операции над API-ресурсом,
-/// для которых ApiKit может сформировать permission автоматически.
+/// Defines the available states for permission operation.
 /// </summary>
 public enum PermissionOperation
 {
     /// <summary>
-    /// Чтение ресурса.
+    /// Represents the read permission operation.
     /// </summary>
     Read,
 
     /// <summary>
-    /// Создание ресурса.
+    /// Represents the create permission operation.
     /// </summary>
     Create,
 
     /// <summary>
-    /// Изменение ресурса.
+    /// Represents the update permission operation.
     /// </summary>
     Update,
 
     /// <summary>
-    /// Удаление ресурса.
+    /// Defines the management or application behavior of permission operation.
     /// </summary>
     Delete
 }

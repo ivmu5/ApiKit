@@ -9,12 +9,19 @@ internal static class WindowsNamedPipeSecurityFactory
 {
     public static NamedPipeServerStream CreateServer(
         string pipeName,
-        WindowsNamedPipeAccessOptions access)
+        WindowsNamedPipeAccessOptions access,
+        IEnumerable<string>? additionalAllowedSids = null)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(pipeName);
         ArgumentNullException.ThrowIfNull(access);
 
-        if (access.CurrentUserOnly)
+        var dynamicSids = additionalAllowedSids?
+            .Where(static sid => !string.IsNullOrWhiteSpace(sid))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToArray()
+            ?? Array.Empty<string>();
+
+        if (access.CurrentUserOnly && dynamicSids.Length == 0)
         {
             return new NamedPipeServerStream(
                 pipeName,
@@ -27,11 +34,7 @@ internal static class WindowsNamedPipeSecurityFactory
         var security = new PipeSecurity();
         security.SetAccessRuleProtection(isProtected: true, preserveInheritance: false);
 
-        // Серверной identity нужен FullControl, иначе создание следующих экземпляров
-        // того же pipe может быть заблокировано собственной DACL.
-        using var serverIdentity = WindowsIdentity.GetCurrent();
-        var serverSid = serverIdentity.User
-            ?? throw new InvalidOperationException("Не удалось определить SID текущей Windows identity.");
+        var serverSid = WindowsIsolationIdentity.GetCurrentIsolationSid();
 
         security.AddAccessRule(new PipeAccessRule(
             serverSid,
@@ -42,10 +45,13 @@ internal static class WindowsNamedPipeSecurityFactory
         {
             var account = new NTAccount(accountName);
             var sid = (SecurityIdentifier)account.Translate(typeof(SecurityIdentifier));
-            security.AddAccessRule(new PipeAccessRule(
-                sid,
-                PipeAccessRights.ReadWrite,
-                AccessControlType.Allow));
+            AddReadWriteRule(security, sid);
+        }
+
+        foreach (var sidValue in access.AllowedSids.Concat(dynamicSids))
+        {
+            var sid = new SecurityIdentifier(sidValue);
+            AddReadWriteRule(security, sid);
         }
 
         return NamedPipeServerStreamAcl.Create(
@@ -59,5 +65,13 @@ internal static class WindowsNamedPipeSecurityFactory
             security,
             HandleInheritability.None,
             additionalAccessRights: (PipeAccessRights)0);
+    }
+
+    private static void AddReadWriteRule(PipeSecurity security, SecurityIdentifier sid)
+    {
+        security.AddAccessRule(new PipeAccessRule(
+            sid,
+            PipeAccessRights.ReadWrite,
+            AccessControlType.Allow));
     }
 }

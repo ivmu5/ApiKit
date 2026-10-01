@@ -3,13 +3,13 @@ using Microsoft.IdentityModel.Tokens;
 namespace ApiKit.Authentication.Abstractions;
 
 /// <summary>
-/// Предоставляет данные, необходимые для подписи создаваемых JWT-токенов.
+/// Defines the contract for i JWT signing credentials provider.
 /// </summary>
 public interface IJwtSigningCredentialsProvider
 {
     /// <summary>
-    /// Возвращает параметры подписи JWT-токена.
+    /// Returns signing credentials.
     /// </summary>
-    /// <returns>Параметры подписи JWT-токена.</returns>
+    /// <returns>The requested value.</returns>
     SigningCredentials GetSigningCredentials();
 }

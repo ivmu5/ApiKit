@@ -25,15 +25,11 @@ internal static class JwtTokenValidationParametersFactory
             RequireExpirationTime = true,
             ClockSkew = options.ClockSkew,
 
-            // Позволяет использовать стандартные [Authorize(Roles = "...")]
-            // и ClaimsPrincipal.IsInRole(...) без преобразования имён входящих утверждений.
             RoleClaimType = options.RoleClaimType,
 
             RequireSignedTokens = true,
             ValidateIssuerSigningKey = true,
 
-            // Механизм выбора поддерживает несколько одновременно действующих ключей.
-            // Если токен содержит kid, используются только ключи с совпадающим KeyId.
             IssuerSigningKeyResolver = (_, _, keyId, _) =>
             {
                 var keys = keyProvider.GetValidationKeys();

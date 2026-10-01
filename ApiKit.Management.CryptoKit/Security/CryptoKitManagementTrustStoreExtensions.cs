@@ -3,12 +3,12 @@ using ApiKit.Management.CryptoKit.Models;
 namespace ApiKit.Management.CryptoKit.Security;
 
 /// <summary>
-/// Содержит удобные операции bootstrap доверия между management peers.
+/// Defines extension methods for crypto kit management trust store extensions.
 /// </summary>
 public static class CryptoKitManagementTrustStoreExtensions
 {
     /// <summary>
-    /// Добавляет public credential, экспортированный доверяемым management peer.
+    /// Adds or confirms a peer's trusted public key.
     /// </summary>
     public static ValueTask TrustAsync(
         this ICryptoKitManagementTrustStore trustStore,
@@ -26,7 +26,26 @@ public static class CryptoKitManagementTrustStoreExtensions
     }
 
     /// <summary>
-    /// Отзывает доверие к ранее опубликованному public credential.
+    /// Marks retiring async.
+    /// </summary>
+    public static ValueTask MarkRetiringAsync(
+        this ICryptoKitManagementTrustStore trustStore,
+        CryptoKitManagementPublicCredential credential,
+        DateTimeOffset acceptUntilUtc,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(trustStore);
+        ArgumentNullException.ThrowIfNull(credential);
+
+        return trustStore.MarkRetiringAsync(
+            credential.Identity,
+            credential.CredentialId,
+            acceptUntilUtc,
+            cancellationToken);
+    }
+
+    /// <summary>
+    /// Revokes async.
     /// </summary>
     public static ValueTask RevokeAsync(
         this ICryptoKitManagementTrustStore trustStore,

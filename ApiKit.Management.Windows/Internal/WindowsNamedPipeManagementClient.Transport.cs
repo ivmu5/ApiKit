@@ -28,8 +28,6 @@ internal sealed partial class WindowsNamedPipeManagementClient
             settings.AdministrationPipeName,
             WindowsManagementTransportDefaults.AdministrationPurpose);
 
-        // Host доказывает identity первым. Админ-панель не раскрывает собственный proof
-        // и не отправляет административный payload неизвестному локальному pipe.
         var hostAuthentication = await WindowsNamedPipeChallengeResponseProtocol.VerifyIdentityAsync(
             pipe,
             adminIdentity,

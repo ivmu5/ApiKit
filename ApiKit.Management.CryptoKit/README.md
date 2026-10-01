@@ -1,132 +1,110 @@
 # ApiKit.Management.CryptoKit
 
-Опциональный адаптер management security между ApiKit и отдельной библиотекой CryptoKit.
+English | [Русский](README.ru.md)
 
-По умолчанию проект ожидает CryptoKit по пути:
+Optional .NET 10 adapter connecting ApiKit management security to the independent CryptoKit submodule. CryptoKit owns RSA key material, storage and its provider lifecycle; this adapter supplies RSA-PSS/SHA-256 management proofs, durable credential state and explicit public-key trust.
 
-```text
-../CryptoKit/CryptoKit.csproj
-```
+[Repository overview](../README.md) | Libraries: [ApiKit](../ApiKit/README.md) · [ApiKit.Management.Windows](../ApiKit.Management.Windows/README.md) · **ApiKit.Management.CryptoKit**
 
-Путь можно переопределить MSBuild-свойством `CryptoKitProjectPath`.
+Test projects: [ApiKit.Tests](../ApiKit.Tests/README.md) · [ApiKit.Management.CryptoKit.Tests](../ApiKit.Management.CryptoKit.Tests/README.md) · [ApiKit.Management.Windows.Tests](../ApiKit.Management.Windows.Tests/README.md) · [ApiKit.Management.Windows.TestWorker](../ApiKit.Management.Windows.TestWorker/README.md) · [ApiKit.Management.Windows.PrivilegedTests](../ApiKit.Management.Windows.PrivilegedTests/README.md) | [CryptoKit](../external/CryptoKit/README.md)
 
-Пример регистрации:
+## Contents
 
-```csharp
-services.AddCryptoKitFileStorage(options =>
-{
-    options.DirectoryPath = "...";
-});
-services.AddCryptoKitRsa();
+- [Capabilities](#capabilities)
+- [Architecture](#architecture)
+- [Public API](#public-api)
+- [Lifecycle and concurrency](#lifecycle-and-concurrency)
+- [Testing](#testing)
+- [Important limitations](#important-limitations)
+- [Modification and extension points](#modification-and-extension-points)
+- [Dependencies](#dependencies)
 
-services
-    .AddApiKitManagement()
-    .AddCryptoKitSecurity(options =>
-    {
-        options.AddCredential(
-            peerId: "messages",
-            kind: ManagementPeerKind.ManagedService,
-            keyId: "management/messages/current",
-            credentialId: "messages-2026-01");
-    });
-```
+## Capabilities
 
-Runtime-адаптер по умолчанию не создаёт отсутствующий RSA-ключ. Для bootstrap можно явно передать `createIfMissing: true`, однако production provisioning рекомендуется выполнять отдельным установщиком/control plane.
+- Sign and verify context-bound management challenge proofs without disclosing private keys to peers.
+- Maintain per-identity local credentials and a separate store of explicitly trusted remote public keys.
+- Prepare, activate and retire credentials with a staged overlap for key rotation.
+- Provision isolated service key storage during Windows service installation and restore it on subsequent launches.
 
-Доверенные peer public keys хранятся отдельно через `ICryptoKitManagementTrustStore`. Проверяющая сторона не должна хранить private keys других сервисов.
+## Architecture
 
-## Регистрация сервиса через Windows Named Pipes
-
-Management protocol v4 ввёл challenge-response для регистрации сервиса. Начиная с protocol v5 Host и Service используют взаимную аутентификацию до передачи `Register`, `Withdraw`, management operations или CRUD payload.
-Управляемый сервис должен зарегистрировать `IManagementCredentialProvider`, а Management Host — `IManagementPeerVerifier` и доверенный public key сервиса.
-
-```csharp
-services.AddCryptoKitFileStorage(options =>
-{
-    options.DirectoryPath = "...";
-});
-services.AddCryptoKitRsa();
-
-var management = services
-    .AddApiKitManagement(options => options.ServiceName = "messages")
-    .AddCryptoKitSecurity(options =>
-    {
-        options.AddCredential(
-            peerId: "messages",
-            kind: ManagementPeerKind.ManagedService,
-            keyId: "management/messages/current",
-            credentialId: "messages-2026-01");
-    })
-    .AddWindowsNamedPipeTransport();
-```
-
-На стороне Management Host public credential сервиса должен быть предварительно добавлен в `ICryptoKitManagementTrustStore`.
-После успешного proof host дополнительно проверяет, что подтверждённые `PeerId` и `InstanceId` совпадают с `ServiceName` и `InstanceId` присланного descriptor.
-
-## Взаимная аутентификация Host и Service
-
-Начиная с этапа 5 (management protocol v5) соединения между Management Host и управляемыми сервисами используют взаимный challenge-response.
-
-На registration pipe порядок намеренно такой:
+[`CryptoKitManagementServiceCollectionExtensions`](DependencyInjection/CryptoKitManagementServiceCollectionExtensions.cs) composes CryptoKit's RSA and storage providers with ApiKit's [`IManagementCredentialProvider`](../ApiKit/Management/Abstractions/IManagementCredentialProvider.cs) and [`IManagementPeerVerifier`](../ApiKit/Management/Abstractions/IManagementPeerVerifier.cs). The [credential registry](Internal/CryptoKitManagementCredentialRegistry.cs) owns durable local activation/retirement; the [trust store](Internal/CryptoKitManagementTrustStore.cs) keeps remote public credentials; the [proof implementation](Internal/CryptoKitManagementRsaProof.cs) applies management-specific RSA-PSS/SHA-256.
 
 ```text
-Management Host -> Service proof
-Service verifies trusted host credential
-Service -> Management Host proof
-Host verifies trusted service credential
-Register / Heartbeat / Withdraw
+ApiKit Management challenge/peer contracts
+           │
+ApiKit.Management.CryptoKit
+   ├─ RSA-PSS proof + peer verifier
+   ├─ durable local credential rotation
+   ├─ explicitly trusted remote public keys
+   └─ managed-service credential provisioner
+           │
+external/CryptoKit → IRsaKeyProvider + IKeyStorage
 ```
 
-Сервис не подписывает challenge до проверки Management Host. Это закрывает сценарий поддельного registration host, который мог бы получить proof от сервиса до подтверждения собственной identity.
+<details>
+<summary>Separate signer and trust state</summary>
 
-На management pipe перед передачей operations, CRUD payload и delegated claims обе стороны также подтверждают identity. Host проверяет именно `ServiceName + InstanceId`, опубликованные ранее в registry.
+Only the local credential holder gets its private RSA material. Other parties receive the corresponding public SPKI by a separately trusted distribution path and explicitly add it through [`ICryptoKitManagementTrustStore`](Security/ICryptoKitManagementTrustStore.cs). `Available`, `Active` and `Retired` describe local signer credentials; `Trusted` and `Retiring` describe remote public-key acceptance. Bootstrap `IsActive` does not overwrite an existing durable rotation decision. Credential IDs and RSA key IDs cannot be reused across unrelated identities.
 
-Поэтому trust store должен быть настроен в обе стороны:
+</details>
 
-- Management Host хранит trusted public credentials управляемых сервисов;
-- каждый сервис хранит trusted public credential Management Host;
-- Host имеет собственный локальный RSA credential с `ManagementPeerKind.ManagementHost`;
-- сервис имеет собственный локальный RSA credential с `ManagementPeerKind.ManagedService`.
+## Public API
 
-Например credential Host можно зарегистрировать так:
+Register CryptoKit storage and RSA first, then register the adapter for the current process identity:
 
 ```csharp
-services.AddApiKitManagementCryptoKit(options =>
-{
-    options.AddCredential(
-        peerId: "management-host",
-        kind: ManagementPeerKind.ManagementHost,
-        keyId: "management/host/current",
-        credentialId: "management-host-2026-01");
-});
+using ApiKit.Management.CryptoKit.DependencyInjection;
+using ApiKit.Management.Security;
+using CryptoKit.Rsa;
+using CryptoKit.Storage;
+
+services.AddCryptoKitFileStorage(options => options.DirectoryPath = keyDirectory);
+services.AddCryptoKitRsa();
+services.AddApiKitManagementCryptoKit(options => options.AddCredential(
+    peerId: "management-host",
+    kind: ManagementPeerKind.ManagementHost,
+    keyId: "management/host/2026-01",
+    credentialId: "host-2026-01"));
 ```
 
-А управляемый сервис должен использовать тот же `ManagementHostPeerId`, который настроен на Host.
+To attach the adapter to [`ApiKitManagementBuilder`](../ApiKit/Management/Builders/ApiKitManagementBuilder.cs), use `AddCryptoKitSecurity(options => ...)` instead of calling `AddApiKitManagementCryptoKit` directly. The configured credential must already exist unless `createIfMissing: true` is explicitly requested; production services should normally use installer provisioning. A registration alone does **not** trust any remote peer.
 
-## Административный клиент и Management Host
+<details>
+<summary>Rotation and installer provisioning</summary>
 
-Начиная с этапа 6 (management protocol v6) административный pipe также использует взаимный challenge-response.
-Management Host сначала доказывает `ManagementPeerKind.ManagementHost`, после чего админ-панель доказывает
-`ManagementPeerKind.AdminClient`. Административный request передаётся только после обеих проверок.
+Use [`ICryptoKitManagementCredentialRotationManager`](Security/ICryptoKitManagementCredentialRotationManager.cs) to prepare and activate a new local signer. Export the public credential via [`ICryptoKitManagementPublicCredentialProvider`](Security/ICryptoKitManagementPublicCredentialProvider.cs), distribute it over a trusted channel and call [`ICryptoKitManagementTrustStore.TrustAsync`](Security/ICryptoKitManagementTrustStore.cs) on each verifier **before** activation. During the overlap, `MarkRetiringAsync` places the previous public credential into a time-limited state; finally revoke the old trust and retire the inactive local signer. Revocation does not automatically erase RSA key material.
 
-Для админ-панели нужен отдельный credential, например:
+To provision services from the Windows Host, register `AddApiKitManagementCryptoKitProvisioning()` alongside a configured adapter. An installed service can consume the generated state with `AddApiKitProvisionedManagementCryptoKit()`; custom layouts use [`CryptoKitManagementProvisioningPaths`](Provisioning/CryptoKitManagementProvisioningPaths.cs).
 
-```csharp
-services.AddApiKitManagementCryptoKit(options =>
-{
-    options.AddCredential(
-        peerId: "admin-client",
-        kind: ManagementPeerKind.AdminClient,
-        keyId: "management/admin/current",
-        credentialId: "admin-client-2026-01");
-});
+</details>
+
+## Lifecycle and concurrency
+
+Local rotation/trust metadata is persisted through the registered CryptoKit `IKeyStorage` separately from RSA keys and is restored on restart. Do not share the same credential store among independent concurrent writers without additional cross-process coordination. Treat private service keys as scoped to the owning service, and distribute only public SPKI. Managed-service credential provisioning and deprovisioning are part of the Windows installer lifecycle; maintain isolated storage per service.
+
+## Testing
+
+[Adapter tests](../ApiKit.Management.CryptoKit.Tests/README.md) cover actual CryptoKit-generated RSA proofs, negative verification, trust changes, rotation persistence, credential isolation and service provisioning. Run from the repository root:
+
+```powershell
+dotnet test ApiKit.Management.CryptoKit.Tests/ApiKit.Management.CryptoKit.Tests.csproj -c Release
 ```
 
-Trust store должен быть настроен в обе стороны:
+These tests do not replace real Windows Named Pipe or privileged SCM/ACL tests.
 
-- Management Host доверяет public credential административного клиента;
-- административный клиент доверяет public credential Management Host;
-- private keys не передаются между процессами.
+## Important limitations
 
-Идентификаторы `AdminClientPeerId` и `ManagementHostPeerId` в `WindowsManagementClientOptions`
-должны соответствовать зарегистрированным CryptoKit credentials.
+The adapter signs management challenge payloads; it does not implement general-purpose RSA encryption or redefine CryptoKit's own providers. Valid RSA proofs depend on correctly provisioned public-key trust. Local retired credentials cannot be reactivated, while a retiring remote public credential can be re-trusted during a controlled rollback. Management identity is bound to its service credential; it is not independent hardware-backed per-process attestation.
+
+## Modification and extension points
+
+| Change | Start with |
+|---|---|
+| Proof algorithm boundary | [CryptoKitManagementRsaProof](Internal/CryptoKitManagementRsaProof.cs), [proof tests](../ApiKit.Management.CryptoKit.Tests/Security/CryptoProofTests.cs) |
+| Trust and rotation behavior | [Trust store](Internal/CryptoKitManagementTrustStore.cs), [credential registry](Internal/CryptoKitManagementCredentialRegistry.cs), [rotation tests](../ApiKit.Management.CryptoKit.Tests/Security/CredentialRotationTests.cs) |
+| Installer key provisioning/layout | [Provisioner](Internal/CryptoKitManagedServiceCredentialProvisioner.cs), [paths](Provisioning/CryptoKitManagementProvisioningPaths.cs), [provisioning tests](../ApiKit.Management.CryptoKit.Tests/Security/ProvisioningTests.cs) |
+
+## Dependencies
+
+References [ApiKit](../ApiKit/README.md), [CryptoKit](../external/CryptoKit/README.md) via the `external/CryptoKit` Git submodule, and Microsoft DI. The project does not reference `ApiKit.Management.Windows`; its assembly and package references are in [the project file](ApiKit.Management.CryptoKit.csproj). The submodule's [MIT license](../external/CryptoKit/LICENSE.txt) applies to its sources.

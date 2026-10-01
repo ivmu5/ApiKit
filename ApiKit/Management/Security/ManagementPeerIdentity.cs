@@ -3,35 +3,30 @@ using ApiKit.Management.Models;
 namespace ApiKit.Management.Security;
 
 /// <summary>
-/// Описывает стабильную security identity участника management plane.
+/// Identifies a participant in management authentication, including the instance ID when applicable.
 /// </summary>
-/// <param name="PeerId">
-/// Стабильный технический идентификатор участника. Для управляемого сервиса обычно совпадает с его ServiceName.
-/// </param>
-/// <param name="Kind">Роль участника в management plane.</param>
+/// <param name="PeerId">The peer ID value.</param>
+/// <param name="Kind">The kind value.</param>
 public sealed record ManagementPeerIdentity(
     string PeerId,
     ManagementPeerKind Kind)
 {
     /// <summary>
-    /// Идентификатор конкретного запущенного экземпляра, если identity относится к процессу с отдельным instance id.
+    /// Gets or sets instance id.
     /// </summary>
     public string? InstanceId { get; init; }
 
     /// <summary>
-    /// Дополнительная metadata identity, не используемая как самостоятельное доказательство доверия.
+    /// Gets or sets metadata.
     /// </summary>
     public IReadOnlyDictionary<string, string> Metadata { get; init; }
         = new Dictionary<string, string>();
 
     /// <summary>
-    /// Создаёт security identity для конкретного экземпляра управляемого сервиса.
+    /// Creates the value for managed service.
     /// </summary>
-    /// <param name="serviceIdentity">Идентификация экземпляра сервиса.</param>
-    /// <returns>
-    /// Identity с <see cref="PeerId"/>, равным <see cref="ManagementServiceIdentity.ServiceName"/>,
-    /// и <see cref="InstanceId"/>, равным идентификатору текущего процесса сервиса.
-    /// </returns>
+    /// <param name="serviceIdentity">The managed service identity.</param>
+    /// <returns>The result of the operation.</returns>
     public static ManagementPeerIdentity ForManagedService(
         ManagementServiceIdentity serviceIdentity)
     {
@@ -47,10 +42,10 @@ public sealed record ManagementPeerIdentity(
         };
     }
     /// <summary>
-    /// Создаёт security identity центрального management host.
+    /// Creates the value for management host.
     /// </summary>
-    /// <param name="peerId">Стабильный технический идентификатор management host.</param>
-    /// <returns>Identity с типом <see cref="ManagementPeerKind.ManagementHost"/>.</returns>
+    /// <param name="peerId">The peer ID value.</param>
+    /// <returns>The result of the operation.</returns>
     public static ManagementPeerIdentity ForManagementHost(string peerId)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(peerId);
@@ -61,10 +56,10 @@ public sealed record ManagementPeerIdentity(
     }
 
     /// <summary>
-    /// Создаёт security identity административного management-клиента.
+    /// Creates the value for admin client.
     /// </summary>
-    /// <param name="peerId">Стабильный технический идентификатор административного клиента.</param>
-    /// <returns>Identity с типом <see cref="ManagementPeerKind.AdminClient"/>.</returns>
+    /// <param name="peerId">The peer ID value.</param>
+    /// <returns>The result of the operation.</returns>
     public static ManagementPeerIdentity ForAdminClient(string peerId)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(peerId);

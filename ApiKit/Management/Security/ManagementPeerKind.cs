@@ -1,19 +1,27 @@
 namespace ApiKit.Management.Security;
 
 /// <summary>
-/// Определяет роль участника локального management plane.
+/// Defines the available states for management peer kind.
 /// </summary>
 public enum ManagementPeerKind
 {
-    /// <summary>Роль участника не определена.</summary>
+    /// <summary>
+    /// Identifies the unknown peer kind.
+    /// </summary>
     Unknown = 0,
 
-    /// <summary>Центральный management host, координирующий локальные сервисы.</summary>
+    /// <summary>
+    /// Identifies the management host peer kind.
+    /// </summary>
     ManagementHost = 1,
 
-    /// <summary>Административный клиент, например локальная админ-панель.</summary>
+    /// <summary>
+    /// Identifies the admin client peer kind.
+    /// </summary>
     AdminClient = 2,
 
-    /// <summary>Управляемый микросервис, зарегистрированный в management plane.</summary>
+    /// <summary>
+    /// Identifies the managed service peer kind.
+    /// </summary>
     ManagedService = 3
 }

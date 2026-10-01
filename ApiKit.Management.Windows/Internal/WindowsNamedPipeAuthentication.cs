@@ -42,9 +42,6 @@ internal static class WindowsNamedPipeAuthentication
 
         try
         {
-            // GetImpersonationUserName доступен только когда клиент разрешил impersonation
-            // и уже записал данные в pipe. Поэтому identity является дополнительной metadata,
-            // а безопасный Windows boundary прежде всего задаётся ACL самого pipe.
             operatingSystemIdentity = pipe.GetImpersonationUserName();
         }
         catch (IOException)

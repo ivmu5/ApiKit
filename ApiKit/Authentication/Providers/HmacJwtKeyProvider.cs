@@ -7,7 +7,7 @@ using System.Text;
 namespace ApiKit.Authentication.Providers;
 
 /// <summary>
-/// Предоставляет симметричный HMAC-ключ для подписи и проверки JWT-токенов.
+/// Provides HMAC-SHA-256 signing and verification keys for JWT.
 /// </summary>
 internal sealed class HmacJwtKeyProvider :
     IJwtSigningCredentialsProvider,
@@ -18,9 +18,9 @@ internal sealed class HmacJwtKeyProvider :
     private readonly IReadOnlyCollection<SecurityKey> _validationKeys;
 
     /// <summary>
-    /// Создаёт провайдер HMAC-ключа.
+    /// Initializes a new HmacJwtKeyProvider instance.
     /// </summary>
-    /// <param name="options">Настройки HMAC-ключа.</param>
+    /// <param name="options">The configuration options.</param>
     public HmacJwtKeyProvider(IOptions<JwtHmacOptions> options)
     {
         ArgumentNullException.ThrowIfNull(options);

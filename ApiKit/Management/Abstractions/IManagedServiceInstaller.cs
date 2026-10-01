@@ -3,23 +3,29 @@ using ApiKit.Management.Lifecycle;
 namespace ApiKit.Management.Abstractions;
 
 /// <summary>
-/// Абстракция привилегированного management host для установки, обновления и удаления сервисов.
+/// Defines the contract for i managed service installer.
 /// </summary>
 public interface IManagedServiceInstaller
 {
-    /// <summary>Устанавливает сервис из подготовленного каталога пакета.</summary>
+    /// <summary>
+    /// Installs the verified managed service package and provisions its credentials.
+    /// </summary>
     ValueTask InstallAsync(
         ManagedServicePackageManifest manifest,
         string packageDirectory,
         CancellationToken cancellationToken = default);
 
-    /// <summary>Обновляет ранее установленный сервис новым пакетом.</summary>
+    /// <summary>
+    /// Updates async.
+    /// </summary>
     ValueTask UpdateAsync(
         ManagedServicePackageManifest manifest,
         string packageDirectory,
         CancellationToken cancellationToken = default);
 
-    /// <summary>Удаляет установленный сервис.</summary>
+    /// <summary>
+    /// Uninstalls a managed service and revokes its provisioned credentials.
+    /// </summary>
     ValueTask UninstallAsync(
         string serviceName,
         CancellationToken cancellationToken = default);

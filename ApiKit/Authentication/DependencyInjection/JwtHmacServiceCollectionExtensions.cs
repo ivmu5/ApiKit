@@ -9,17 +9,16 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 namespace ApiKit.Authentication;
 
 /// <summary>
-/// Содержит методы регистрации HMAC-SHA256 ключей для JWT.
+/// Defines extension methods for JWT HMAC service collection extensions.
 /// </summary>
 public static class JwtHmacServiceCollectionExtensions
 {
     /// <summary>
-    /// Добавляет HMAC-SHA256 провайдер ключей JWT и загружает секретный ключ
-    /// из секции <c>Jwt:Hmac</c>.
+    /// Registers API kit JWT HMAC key provider.
     /// </summary>
-    /// <param name="services">Коллекция сервисов приложения.</param>
-    /// <param name="configuration">Конфигурация приложения.</param>
-    /// <returns>Исходная коллекция сервисов.</returns>
+    /// <param name="services">The dependency injection service collection.</param>
+    /// <param name="configuration">The application configuration.</param>
+    /// <returns>The builder or service collection for further configuration.</returns>
     public static IServiceCollection AddApiKitJwtHmacKeyProvider(
         this IServiceCollection services,
         IConfiguration configuration)

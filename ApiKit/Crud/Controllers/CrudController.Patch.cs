@@ -18,9 +18,9 @@ public abstract partial class CrudController<
     where TUpdateModel : class
 {
     /// <summary>
-    /// Проверяет базовые ограничения JSON Patch до его применения.
+    /// Validates the operation count and permitted JSON Pointer paths before applying JSON Patch.
     /// </summary>
-    /// <param name="patchDocument">JSON Patch документ.</param>
+    /// <param name="patchDocument">The JSON Patch document.</param>
     protected virtual void ValidatePatchDocument(JsonPatchDocument<TUpdateModel> patchDocument)
     {
         var operations = ((IJsonPatchDocument)patchDocument).GetOperations();
@@ -53,12 +53,11 @@ public abstract partial class CrudController<
     }
 
     /// <summary>
-    /// Возвращает верхнеуровневые свойства update-модели, доступные для JSON Patch.
+    /// Returns the update model properties available to JSON Patch by default.
     /// </summary>
-    /// <returns>Допустимые имена свойств.</returns>
+    /// <returns>The requested value.</returns>
     /// <remarks>
-    /// Проверка по умолчанию ограничивает только корневой сегмент JSON Pointer.
-    /// Для более строгих правил можно переопределить <see cref="ValidatePatchDocument"/>.
+    /// The default validation permits properties exposed by the update model. Override patch validation to impose stricter application rules.
     /// </remarks>
     protected virtual IReadOnlySet<string> GetPatchablePaths()
     {

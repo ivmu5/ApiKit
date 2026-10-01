@@ -1,7 +1,7 @@
 namespace ApiKit.Management.Models;
 
 /// <summary>
-/// Описывает адрес, на котором текущий экземпляр сервиса принимает подключения.
+/// Defines the management or application behavior of management service address.
 /// </summary>
-/// <param name="Address">Адрес в формате, предоставленном ASP.NET Core server.</param>
+/// <param name="Address">The address value.</param>
 public sealed record ManagementServiceAddress(string Address);

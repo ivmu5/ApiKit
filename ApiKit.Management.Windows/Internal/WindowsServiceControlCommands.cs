@@ -4,7 +4,7 @@ using ApiKit.Management.Lifecycle;
 namespace ApiKit.Management.Windows.Internal;
 
 /// <summary>
-/// Инкапсулирует вызовы штатного sc.exe без shell-обработки пользовательских аргументов.
+/// Invokes Windows SCM through sc.exe without shell evaluation of user-supplied arguments.
 /// </summary>
 internal static class WindowsServiceControlCommands
 {
@@ -52,6 +52,12 @@ internal static class WindowsServiceControlCommands
             cancellationToken);
     }
 
+
+    public static Task ConfigureUnrestrictedServiceSidAsync(
+        string serviceName,
+        CancellationToken cancellationToken) =>
+        RunAsync(["sidtype", serviceName, "unrestricted"], cancellationToken);
+
     public static Task SetDescriptionAsync(
         string serviceName,
         string description,
@@ -71,7 +77,6 @@ internal static class WindowsServiceControlCommands
         }
         catch
         {
-            // Best effort cleanup: исходная ошибка установки важнее ошибки удаления.
         }
     }
 
@@ -148,7 +153,29 @@ internal static class WindowsServiceControlCommands
         var standardOutput = process.StandardOutput.ReadToEndAsync(cancellationToken);
         var standardError = process.StandardError.ReadToEndAsync(cancellationToken);
 
-        await process.WaitForExitAsync(cancellationToken);
+        try
+        {
+            await process.WaitForExitAsync(cancellationToken);
+        }
+        catch (OperationCanceledException)
+        {
+            // A cancelled sc.exe command must not mutate SCM later, after the
+            // installer has already started its rollback/recovery path.
+            try
+            {
+                if (!process.HasExited)
+                {
+                    process.Kill(entireProcessTree: true);
+                    await process.WaitForExitAsync(CancellationToken.None);
+                }
+            }
+            catch (InvalidOperationException)
+            {
+                // The process exited between the check and the kill request.
+            }
+
+            throw;
+        }
 
         var output = await standardOutput;
         var error = await standardError;

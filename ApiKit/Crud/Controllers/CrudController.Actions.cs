@@ -20,11 +20,11 @@ public abstract partial class CrudController<
     where TUpdateModel : class
 {
     /// <summary>
-    /// Возвращает страницу ресурсов.
+    /// Returns a paginated list of resource read models.
     /// </summary>
-    /// <param name="options">Параметры пагинации.</param>
-    /// <param name="cancellationToken">Токен отмены запроса.</param>
-    /// <returns>Страница read-моделей.</returns>
+    /// <param name="options">The configuration options.</param>
+    /// <param name="cancellationToken">A token that cancels this operation.</param>
+    /// <returns>The requested value.</returns>
     [HttpGet]
     [CrudOperation(CrudOperationKind.Read)]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -71,11 +71,11 @@ public abstract partial class CrudController<
     }
 
     /// <summary>
-    /// Возвращает ресурс по первичному ключу.
+    /// Returns the resource matching the specified primary key, if present.
     /// </summary>
-    /// <param name="id">Первичный ключ ресурса.</param>
-    /// <param name="cancellationToken">Токен отмены запроса.</param>
-    /// <returns>Read-модель ресурса или 404.</returns>
+    /// <param name="id">The primary key of the resource.</param>
+    /// <param name="cancellationToken">A token that cancels this operation.</param>
+    /// <returns>The requested value.</returns>
     [HttpGet("{id}")]
     [CrudOperation(CrudOperationKind.Read)]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -95,11 +95,11 @@ public abstract partial class CrudController<
     }
 
     /// <summary>
-    /// Создаёт новый ресурс.
+    /// Creates and persists a resource and returns its read model.
     /// </summary>
-    /// <param name="model">Модель создания.</param>
-    /// <param name="cancellationToken">Токен отмены запроса.</param>
-    /// <returns>Созданный ресурс.</returns>
+    /// <param name="model">The input data model.</param>
+    /// <param name="cancellationToken">A token that cancels this operation.</param>
+    /// <returns>The created value.</returns>
     [HttpPost]
     [CrudOperation(CrudOperationKind.Create)]
     [ProducesResponseType(StatusCodes.Status201Created)]
@@ -123,12 +123,12 @@ public abstract partial class CrudController<
     }
 
     /// <summary>
-    /// Полностью обновляет существующий ресурс.
+    /// Replaces the existing resource using the provided update model.
     /// </summary>
-    /// <param name="id">Первичный ключ ресурса.</param>
-    /// <param name="model">Модель обновления.</param>
-    /// <param name="cancellationToken">Токен отмены запроса.</param>
-    /// <returns>204 при успешном обновлении или 404.</returns>
+    /// <param name="id">The primary key of the resource.</param>
+    /// <param name="model">The input data model.</param>
+    /// <param name="cancellationToken">A token that cancels this operation.</param>
+    /// <returns>The result of the operation.</returns>
     [HttpPut("{id}")]
     [CrudOperation(CrudOperationKind.Update)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -154,12 +154,12 @@ public abstract partial class CrudController<
     }
 
     /// <summary>
-    /// Частично обновляет ресурс через стандартный JSON Patch ASP.NET Core.
+    /// Partially updates a resource using a validated JSON Patch document.
     /// </summary>
-    /// <param name="id">Первичный ключ ресурса.</param>
-    /// <param name="patchDocument">JSON Patch документ.</param>
-    /// <param name="cancellationToken">Токен отмены запроса.</param>
-    /// <returns>Обновлённый ресурс, 400 или 404.</returns>
+    /// <param name="id">The primary key of the resource.</param>
+    /// <param name="patchDocument">The JSON Patch document.</param>
+    /// <param name="cancellationToken">A token that cancels this operation.</param>
+    /// <returns>The result of the operation.</returns>
     [HttpPatch("{id}")]
     [Consumes("application/json-patch+json")]
     [CrudOperation(CrudOperationKind.Update)]
@@ -202,11 +202,11 @@ public abstract partial class CrudController<
     }
 
     /// <summary>
-    /// Удаляет существующий ресурс.
+    /// Deletes a resource by its primary key.
     /// </summary>
-    /// <param name="id">Первичный ключ ресурса.</param>
-    /// <param name="cancellationToken">Токен отмены запроса.</param>
-    /// <returns>204 при успешном удалении или 404.</returns>
+    /// <param name="id">The primary key of the resource.</param>
+    /// <param name="cancellationToken">A token that cancels this operation.</param>
+    /// <returns>The result of the operation.</returns>
     [HttpDelete("{id}")]
     [CrudOperation(CrudOperationKind.Delete)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]

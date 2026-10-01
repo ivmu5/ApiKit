@@ -1,12 +1,12 @@
 namespace ApiKit.Authentication.Models;
 
 /// <summary>
-/// Представляет результат создания JWT-токена.
+/// Defines a result of JWT token result.
 /// </summary>
-/// <param name="AccessToken">JWT-токен в строковом представлении.</param>
-/// <param name="JwtId">Идентификатор выпущенного JWT-токена.</param>
-/// <param name="IssuedAtUtc">Момент выпуска токена в UTC.</param>
-/// <param name="ExpiresAtUtc">Момент окончания срока действия токена в UTC.</param>
+/// <param name="AccessToken">The access token value.</param>
+/// <param name="JwtId">The JWT ID value.</param>
+/// <param name="IssuedAtUtc">The issued at UTC value.</param>
+/// <param name="ExpiresAtUtc">The expires at UTC value.</param>
 public sealed record JwtTokenResult(
     string AccessToken,
     string JwtId,

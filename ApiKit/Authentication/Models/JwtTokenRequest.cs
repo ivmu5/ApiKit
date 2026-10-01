@@ -3,16 +3,14 @@ using System.Security.Claims;
 namespace ApiKit.Authentication.Models;
 
 /// <summary>
-/// Описывает данные, необходимые для создания JWT-токена.
+/// Defines a request for JWT token request.
 /// </summary>
 public sealed class JwtTokenRequest
 {
     /// <summary>
-    /// Создаёт запрос на выпуск JWT-токена для указанного субъекта.
+    /// Initializes a new JwtTokenRequest instance.
     /// </summary>
-    /// <param name="subject">
-    /// Идентификатор субъекта токена. Значение будет записано в claim <c>sub</c>.
-    /// </param>
+    /// <param name="subject">The intended challenge recipient identity.</param>
     public JwtTokenRequest(string subject)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(subject);
@@ -20,32 +18,27 @@ public sealed class JwtTokenRequest
     }
 
     /// <summary>
-    /// Идентификатор субъекта JWT-токена.
+    /// Gets subject.
     /// </summary>
     public string Subject { get; }
 
     /// <summary>
-    /// Дополнительные claims, которые будут добавлены в JWT-токен.
-    /// Зарезервированные JWT claims добавляются генератором автоматически
-    /// и не должны передаваться через эту коллекцию.
+    /// Gets or sets claims.
     /// </summary>
     public IReadOnlyCollection<Claim> Claims { get; init; } = Array.Empty<Claim>();
 
     /// <summary>
-    /// Необязательный идентификатор JWT-токена.
-    /// Если значение не указано, генератор создаст новый <c>jti</c> автоматически.
+    /// Gets or sets JWT id.
     /// </summary>
     public string? JwtId { get; init; }
 
     /// <summary>
-    /// Необязательная аудитория токена.
-    /// Если значение не указано, используется аудитория из настроек генерации JWT.
+    /// Gets or sets audience.
     /// </summary>
     public string? Audience { get; init; }
 
     /// <summary>
-    /// Необязательное время жизни токена.
-    /// Если значение не указано, используется значение из настроек генерации JWT.
+    /// Gets or sets lifetime.
     /// </summary>
     public TimeSpan? Lifetime { get; init; }
 }

@@ -3,14 +3,14 @@ using ApiKit.Authentication.Models;
 namespace ApiKit.Authentication.Abstractions;
 
 /// <summary>
-/// Определяет механизм создания JWT-токенов.
+/// Defines the contract for i JWT token generator.
 /// </summary>
 public interface IJwtTokenGenerator
 {
     /// <summary>
-    /// Создаёт подписанный JWT-токен.
+    /// Generates a signed JWT for the supplied request.
     /// </summary>
-    /// <param name="request">Параметры создаваемого токена.</param>
-    /// <returns>Результат создания JWT-токена.</returns>
+    /// <param name="request">The operation request.</param>
+    /// <returns>The result of the operation.</returns>
     JwtTokenResult Generate(JwtTokenRequest request);
 }

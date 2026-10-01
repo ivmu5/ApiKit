@@ -3,11 +3,13 @@ using System.Text.Json;
 namespace ApiKit.Management.Exceptions;
 
 /// <summary>
-/// Ошибка выполнения CRUD-resource операции через management plane.
+/// Defines an error raised by management resource exception.
 /// </summary>
 public sealed class ManagementResourceException : Exception
 {
-    /// <summary>Создаёт исключение из ответа управляемого сервиса.</summary>
+    /// <summary>
+    /// Initializes a new ManagementResourceException instance.
+    /// </summary>
     public ManagementResourceException(
         int statusCode,
         string? errorCode,
@@ -20,12 +22,18 @@ public sealed class ManagementResourceException : Exception
         Payload = payload;
     }
 
-    /// <summary>HTTP-статус штатного CRUD pipeline.</summary>
+    /// <summary>
+    /// Gets status code.
+    /// </summary>
     public int StatusCode { get; }
 
-    /// <summary>Машиночитаемый код transport/bridge ошибки.</summary>
+    /// <summary>
+    /// Gets error code.
+    /// </summary>
     public string? ErrorCode { get; }
 
-    /// <summary>JSON-тело ошибки, включая ProblemDetails, если оно было сформировано API.</summary>
+    /// <summary>
+    /// Gets payload.
+    /// </summary>
     public JsonElement? Payload { get; }
 }

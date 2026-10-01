@@ -3,30 +3,33 @@ using ApiKit.Management.Security;
 namespace ApiKit.Management.Models;
 
 /// <summary>
-/// Транспортно-независимые сведения о локальном management-клиенте.
+/// Carries the transport, operating-system identity, and cryptographically verified peer identity.
 /// </summary>
 public sealed record ManagementPeerContext
 {
-    /// <summary>Имя используемого transport, например <c>named-pipe</c> или <c>unix-socket</c>.</summary>
+    /// <summary>
+    /// Gets or sets transport.
+    /// </summary>
     public required string Transport { get; init; }
 
     /// <summary>
-    /// Идентичность, подтверждённая операционной системой или transport-уровнем, если она доступна.
+    /// Gets or sets operating system identity.
     /// </summary>
     public string? OperatingSystemIdentity { get; init; }
 
     /// <summary>
-    /// Identity, подтверждённая management challenge/credential проверкой, если криптографическая
-    /// аутентификация уже была выполнена transport-адаптером.
+    /// Gets or sets verified identity.
     /// </summary>
     public ManagementPeerIdentity? VerifiedIdentity { get; init; }
 
     /// <summary>
-    /// Идентификатор credential, которым была подтверждена <see cref="VerifiedIdentity"/>.
+    /// Gets or sets verified credential id.
     /// </summary>
     public string? VerifiedCredentialId { get; init; }
 
-    /// <summary>Дополнительные transport-specific свойства соединения.</summary>
+    /// <summary>
+    /// Gets or sets properties.
+    /// </summary>
     public IReadOnlyDictionary<string, string> Properties { get; init; }
         = new Dictionary<string, string>();
 }

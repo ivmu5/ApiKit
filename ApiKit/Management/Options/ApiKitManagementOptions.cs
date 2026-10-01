@@ -1,60 +1,73 @@
 namespace ApiKit.Management.Options;
 
 /// <summary>
-/// Настройки management metadata и регистрации текущего сервиса.
+/// Defines configuration settings for ApiKit management options.
 /// </summary>
 public sealed class ApiKitManagementOptions
 {
     private readonly Dictionary<Type, ManagementResourceOptions> _resourceMappings = new();
     /// <summary>
-    /// Стабильное техническое имя сервиса. Если не задано, ApiKit использует
-    /// нормализованное имя entry assembly приложения.
+    /// Gets or sets service name.
     /// </summary>
     public string? ServiceName { get; set; }
 
     /// <summary>
-    /// Отображаемое имя сервиса. Если не задано, используется имя приложения.
+    /// Gets or sets display name.
     /// </summary>
     public string? DisplayName { get; set; }
 
     /// <summary>
-    /// Идентификатор текущего экземпляра. По умолчанию создаётся новый GUID при запуске процесса.
+    /// Gets or sets instance id.
     /// </summary>
     public string? InstanceId { get; set; }
 
     /// <summary>
-    /// Версия сервиса. Если не задана, берётся из entry assembly.
+    /// Gets or sets version.
     /// </summary>
     public string? Version { get; set; }
 
-    /// <summary>Автоматически публиковать адреса ASP.NET Core server.</summary>
+    /// <summary>
+    /// Gets or sets whether ASP.NET Core server address discovery is enabled.
+    /// </summary>
     public bool DiscoverServerAddresses { get; set; } = true;
 
-    /// <summary>Автоматически обнаруживать HTTP endpoints ASP.NET Core.</summary>
+    /// <summary>
+    /// Gets or sets whether HTTP endpoint discovery is enabled.
+    /// </summary>
     public bool DiscoverEndpoints { get; set; } = true;
 
-    /// <summary>Автоматически обнаруживать generic CRUD-ресурсы ApiKit.</summary>
+    /// <summary>
+    /// Gets or sets whether automatic CRUD resource discovery is enabled.
+    /// </summary>
     public bool DiscoverCrudResources { get; set; } = true;
 
-    /// <summary>Интервал heartbeat для зарегистрированных publishers.</summary>
+    /// <summary>
+    /// Gets or sets heartbeat interval.
+    /// </summary>
     public TimeSpan HeartbeatInterval { get; set; } = TimeSpan.FromSeconds(10);
 
-    /// <summary>Срок действия регистрации без heartbeat.</summary>
+    /// <summary>
+    /// Gets or sets lease duration.
+    /// </summary>
     public TimeSpan LeaseDuration { get; set; } = TimeSpan.FromSeconds(30);
 
-    /// <summary>Дополнительные capabilities сервиса.</summary>
+    /// <summary>
+    /// Gets capabilities.
+    /// </summary>
     public ISet<string> Capabilities { get; } = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
-    /// <summary>Дополнительные метаданные, публикуемые вместе с descriptor.</summary>
+    /// <summary>
+    /// Gets metadata.
+    /// </summary>
     public IDictionary<string, string> Metadata { get; } =
         new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
     /// <summary>
-    /// Переопределяет имя или группу автоматически обнаруженного CRUD-ресурса.
+    /// Configures a mapping for resource.
     /// </summary>
-    /// <typeparam name="TEntity">Тип EF entity ресурса.</typeparam>
-    /// <param name="configure">Настройка представления ресурса в management metadata.</param>
-    /// <returns>Текущие настройки для цепочки вызовов.</returns>
+    /// <typeparam name="TEntity">The EF Core entity type.</typeparam>
+    /// <param name="configure">An optional configuration callback.</param>
+    /// <returns>The result of the operation.</returns>
     public ApiKitManagementOptions MapResource<TEntity>(
         Action<ManagementResourceOptions> configure)
         where TEntity : class
@@ -68,14 +81,14 @@ public sealed class ApiKitManagementOptions
     }
 
     /// <summary>
-    /// Исключает CRUD-ресурс из management discovery и management-доступа.
+    /// Excludes the specified entity type from management CRUD discovery.
     /// </summary>
     public ApiKitManagementOptions IgnoreResource<TEntity>()
         where TEntity : class =>
         MapResource<TEntity>(options => options.Enabled = false);
 
     /// <summary>
-    /// Переопределяет техническое, отображаемое имя и группу CRUD-ресурса.
+    /// Configures a mapping for resource.
     /// </summary>
     public ApiKitManagementOptions MapResource<TEntity>(
         string name,

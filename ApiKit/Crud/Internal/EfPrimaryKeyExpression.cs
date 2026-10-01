@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 namespace ApiKit.Crud.Internal;
 
 /// <summary>
-/// Внутренние выражения, необходимые только для работы generic CRUD с неизвестным заранее PK.
+/// Constructs EF Core primary-key expressions for generic CRUD operations.
 /// </summary>
 internal static class EfPrimaryKeyExpression
 {

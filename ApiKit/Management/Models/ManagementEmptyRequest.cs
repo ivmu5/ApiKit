@@ -1,6 +1,6 @@
 namespace ApiKit.Management.Models;
 
 /// <summary>
-/// Пустая входная модель для management-операций без параметров.
+/// Represents a management operation that accepts no request payload.
 /// </summary>
 public readonly record struct ManagementEmptyRequest;

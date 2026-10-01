@@ -1,31 +1,31 @@
 namespace ApiKit.Authorization.Permissions;
 
 /// <summary>
-/// Формирует итоговые имена permissions по типу ресурса и операции.
+/// Defines the contract for i permission name resolver.
 /// </summary>
 public interface IPermissionNameResolver
 {
     /// <summary>
-    /// Возвращает permission для стандартной операции над ресурсом.
+    /// Returns permission.
     /// </summary>
-    /// <typeparam name="TResource">Тип API-ресурса.</typeparam>
-    /// <param name="operation">Операция над ресурсом.</param>
-    /// <returns>Итоговое имя permission.</returns>
+    /// <typeparam name="TResource">The t resource type.</typeparam>
+    /// <param name="operation">The requested operation.</param>
+    /// <returns>The requested value.</returns>
     string GetPermission<TResource>(PermissionOperation operation);
 
     /// <summary>
-    /// Возвращает permission для произвольной операции над ресурсом.
+    /// Returns permission.
     /// </summary>
-    /// <typeparam name="TResource">Тип API-ресурса.</typeparam>
-    /// <param name="operation">Имя операции.</param>
-    /// <returns>Итоговое имя permission.</returns>
+    /// <typeparam name="TResource">The t resource type.</typeparam>
+    /// <param name="operation">The requested operation.</param>
+    /// <returns>The requested value.</returns>
     string GetPermission<TResource>(string operation);
 
     /// <summary>
-    /// Возвращает permission для указанного типа ресурса и операции.
+    /// Returns permission.
     /// </summary>
-    /// <param name="resourceType">Тип API-ресурса.</param>
-    /// <param name="operation">Имя операции.</param>
-    /// <returns>Итоговое имя permission.</returns>
+    /// <param name="resourceType">The resource type value.</param>
+    /// <param name="operation">The requested operation.</param>
+    /// <returns>The requested value.</returns>
     string GetPermission(Type resourceType, string operation);
 }

@@ -1,28 +1,42 @@
 namespace ApiKit.Management.Lifecycle;
 
 /// <summary>
-/// Унифицированное состояние управляемого системного сервиса.
+/// Defines the available states for managed service state.
 /// </summary>
 public enum ManagedServiceState
 {
-    /// <summary>Состояние неизвестно.</summary>
+    /// <summary>
+    /// Indicates that the managed service state is unknown.
+    /// </summary>
     Unknown,
 
-    /// <summary>Сервис остановлен.</summary>
+    /// <summary>
+    /// Indicates that the managed service is stopped.
+    /// </summary>
     Stopped,
 
-    /// <summary>Сервис запускается.</summary>
+    /// <summary>
+    /// Indicates that the managed service is starting.
+    /// </summary>
     Starting,
 
-    /// <summary>Сервис работает.</summary>
+    /// <summary>
+    /// Indicates that the managed service is running.
+    /// </summary>
     Running,
 
-    /// <summary>Сервис приостановлен.</summary>
+    /// <summary>
+    /// Indicates that the managed service is paused.
+    /// </summary>
     Paused,
 
-    /// <summary>Сервис останавливается.</summary>
+    /// <summary>
+    /// Indicates that the managed service is stopping.
+    /// </summary>
     Stopping,
 
-    /// <summary>Сервис завершился с ошибкой или находится в ошибочном состоянии.</summary>
+    /// <summary>
+    /// Defines the management or application behavior of managed service state.
+    /// </summary>
     Failed
 }

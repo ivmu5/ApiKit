@@ -1,12 +1,12 @@
 namespace ApiKit.Authorization.Permissions;
 
 /// <summary>
-/// Содержит соглашения ApiKit для permission-based authorization.
+/// Defines standard values for permission authorization defaults.
 /// </summary>
 public static class PermissionAuthorizationDefaults
 {
     /// <summary>
-    /// Тип claim, содержащего отдельное permission пользователя.
+    /// Gets or sets claim type.
     /// </summary>
     public const string ClaimType = "permission";
 }

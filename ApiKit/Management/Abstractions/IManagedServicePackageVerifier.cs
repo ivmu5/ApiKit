@@ -3,21 +3,17 @@ using ApiKit.Management.Lifecycle;
 namespace ApiKit.Management.Abstractions;
 
 /// <summary>
-/// Проверяет целостность и доверенность пакета до привилегированной установки сервиса.
+/// Defines the contract for i managed service package verifier.
 /// </summary>
-/// <remarks>
-/// Конкретная реализация может использовать подпись пакета, хеши файлов и CryptoKit.
-/// Установщик не должен считать пакет доверенным только потому, что он находится на локальном диске.
-/// </remarks>
 public interface IManagedServicePackageVerifier
 {
     /// <summary>
-    /// Проверяет пакет перед установкой.
+    /// Verifies async.
     /// </summary>
-    /// <param name="manifest">Манифест пакета.</param>
-    /// <param name="packageDirectory">Каталог распакованного пакета.</param>
-    /// <param name="cancellationToken">Токен отмены.</param>
-    /// <returns><see langword="true"/>, если пакет разрешено устанавливать.</returns>
+    /// <param name="manifest">The service package manifest.</param>
+    /// <param name="packageDirectory">The directory containing the package.</param>
+    /// <param name="cancellationToken">A token that cancels this operation.</param>
+    /// <returns>The result of the operation.</returns>
     ValueTask<bool> VerifyAsync(
         ManagedServicePackageManifest manifest,
         string packageDirectory,

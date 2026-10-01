@@ -3,31 +3,45 @@ using System.Text.Json;
 namespace ApiKit.Management.Models;
 
 /// <summary>
-/// Унифицированная страница CRUD-ресурсов для management plane.
+/// Represents a page of resources returned by management CRUD.
 /// </summary>
 public sealed record ManagementResourcePage
 {
-    /// <summary>Элементы страницы в форме read-model конкретного ресурса.</summary>
+    /// <summary>
+    /// Gets or sets items.
+    /// </summary>
     public required IReadOnlyList<JsonElement> Items { get; init; }
 
-    /// <summary>Номер страницы, начиная с 1.</summary>
+    /// <summary>
+    /// Gets or sets page.
+    /// </summary>
     public required int Page { get; init; }
 
-    /// <summary>Размер страницы.</summary>
+    /// <summary>
+    /// Gets or sets page size.
+    /// </summary>
     public required int PageSize { get; init; }
 
-    /// <summary>Общее количество элементов.</summary>
+    /// <summary>
+    /// Gets or sets total count.
+    /// </summary>
     public required long TotalCount { get; init; }
 
-    /// <summary>Общее количество страниц.</summary>
+    /// <summary>
+    /// Gets or sets total pages.
+    /// </summary>
     public long TotalPages =>
         PageSize <= 0
             ? 0
             : TotalCount / PageSize + (TotalCount % PageSize == 0 ? 0 : 1);
 
-    /// <summary>Указывает, существует ли предыдущая страница.</summary>
+    /// <summary>
+    /// Gets or sets whether has previous page is enabled.
+    /// </summary>
     public bool HasPreviousPage => Page > 1;
 
-    /// <summary>Указывает, существует ли следующая страница.</summary>
+    /// <summary>
+    /// Gets or sets whether has next page is enabled.
+    /// </summary>
     public bool HasNextPage => Page < TotalPages;
 }

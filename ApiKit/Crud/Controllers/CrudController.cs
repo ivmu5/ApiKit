@@ -4,19 +4,14 @@ using Microsoft.EntityFrameworkCore;
 namespace ApiKit.Crud.Controllers;
 
 /// <summary>
-/// Базовый ASP.NET Core API-контроллер с типовыми CRUD-операциями поверх EF Core.
+/// Implements generic EF Core CRUD endpoints using separate DTO models.
 /// </summary>
-/// <typeparam name="TDbContext">Тип контекста EF Core.</typeparam>
-/// <typeparam name="TEntity">Тип EF Core entity.</typeparam>
-/// <typeparam name="TKey">Тип единственного первичного ключа ресурса.</typeparam>
-/// <typeparam name="TReadModel">Модель, возвращаемая клиенту.</typeparam>
-/// <typeparam name="TCreateModel">Модель создания ресурса.</typeparam>
-/// <typeparam name="TUpdateModel">Модель PUT/PATCH-обновления ресурса.</typeparam>
-/// <remarks>
-/// Контроллер использует стандартные механизмы ASP.NET Core MVC и EF Core и не вводит
-/// repository, unit of work или собственный язык запросов. HTTP actions и основные
-/// этапы обработки объявлены <see langword="virtual"/> и могут быть переопределены.
-/// </remarks>
+/// <typeparam name="TDbContext">The EF Core database context type.</typeparam>
+/// <typeparam name="TEntity">The EF Core entity type.</typeparam>
+/// <typeparam name="TKey">The primary key type.</typeparam>
+/// <typeparam name="TReadModel">The read model type.</typeparam>
+/// <typeparam name="TCreateModel">The create model type.</typeparam>
+/// <typeparam name="TUpdateModel">The update model type.</typeparam>
 [ApiController]
 [Route("api/[controller]")]
 public abstract partial class CrudController<
@@ -32,36 +27,36 @@ public abstract partial class CrudController<
     where TUpdateModel : class
 {
     /// <summary>
-    /// Создаёт CRUD-контроллер для указанного контекста EF Core.
+    /// Implements generic EF Core CRUD endpoints using separate DTO models.
     /// </summary>
-    /// <param name="dbContext">Контекст EF Core.</param>
+    /// <param name="dbContext">The db context value.</param>
     protected CrudController(TDbContext dbContext)
     {
         DbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
     }
 
     /// <summary>
-    /// Контекст EF Core текущего запроса.
+    /// Gets db context.
     /// </summary>
     protected TDbContext DbContext { get; }
 
     /// <summary>
-    /// Набор entity, используемый стандартными CRUD-операциями.
+    /// Gets or sets entities.
     /// </summary>
     protected virtual DbSet<TEntity> Entities => DbContext.Set<TEntity>();
 
     /// <summary>
-    /// Размер страницы по умолчанию.
+    /// Gets or sets default page size.
     /// </summary>
     protected virtual int DefaultPageSize => 25;
 
     /// <summary>
-    /// Максимальный размер страницы стандартного collection endpoint.
+    /// Gets or sets max page size.
     /// </summary>
     protected virtual int MaxPageSize => 100;
 
     /// <summary>
-    /// Максимальное количество операций в одном JSON Patch документе.
+    /// Gets or sets max patch operations.
     /// </summary>
     protected virtual int MaxPatchOperations => 100;
 }

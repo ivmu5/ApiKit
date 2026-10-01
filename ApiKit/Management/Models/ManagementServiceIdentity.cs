@@ -1,16 +1,16 @@
 namespace ApiKit.Management.Models;
 
 /// <summary>
-/// Описывает конкретный запущенный экземпляр сервиса.
+/// Defines the management or application behavior of management service identity.
 /// </summary>
-/// <param name="ServiceName">Стабильное техническое имя сервиса.</param>
-/// <param name="DisplayName">Отображаемое имя сервиса.</param>
-/// <param name="InstanceId">Уникальный идентификатор текущего экземпляра процесса.</param>
-/// <param name="Version">Версия сервиса, если она известна.</param>
-/// <param name="Environment">Имя окружения приложения.</param>
-/// <param name="MachineName">Имя компьютера, на котором работает сервис.</param>
-/// <param name="ProcessId">Идентификатор процесса.</param>
-/// <param name="StartedAtUtc">Время запуска экземпляра в UTC.</param>
+/// <param name="ServiceName">The service name value.</param>
+/// <param name="DisplayName">The display name value.</param>
+/// <param name="InstanceId">The instance ID value.</param>
+/// <param name="Version">The version value.</param>
+/// <param name="Environment">The environment value.</param>
+/// <param name="MachineName">The machine name value.</param>
+/// <param name="ProcessId">The process ID value.</param>
+/// <param name="StartedAtUtc">The started at UTC value.</param>
 public sealed record ManagementServiceIdentity(
     string ServiceName,
     string DisplayName,

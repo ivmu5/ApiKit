@@ -1,26 +1,31 @@
 namespace ApiKit.Management.Windows.Options;
 
 /// <summary>
-/// Настраивает Windows ACL для создаваемого Named Pipe.
+/// Defines configuration settings for windows named pipe access options.
 /// </summary>
 public sealed class WindowsNamedPipeAccessOptions
 {
     private readonly HashSet<string> _allowedAccounts = new(StringComparer.OrdinalIgnoreCase);
+    private readonly HashSet<string> _allowedSids = new(StringComparer.OrdinalIgnoreCase);
 
     /// <summary>
-    /// Ограничивать pipe только текущей Windows identity.
+    /// Gets or sets whether current user only is enabled.
     /// </summary>
-    /// <remarks>
-    /// Это удобный default для разработки, но он не изолирует pipe от другого процесса,
-    /// уже работающего под той же Windows identity. Для production и Windows Services
-    /// под разными учётными записями рекомендуется отключить режим и задать явный ACL.
-    /// </remarks>
     public bool CurrentUserOnly { get; set; } = true;
 
-    /// <summary>Явно разрешённые Windows accounts при <see cref="CurrentUserOnly"/> = <see langword="false"/>.</summary>
+    /// <summary>
+    /// Gets or sets allowed accounts.
+    /// </summary>
     public IReadOnlyCollection<string> AllowedAccounts => _allowedAccounts;
 
-    /// <summary>Разрешает указанную Windows identity или группу.</summary>
+    /// <summary>
+    /// Gets or sets allowed SIDs.
+    /// </summary>
+    public IReadOnlyCollection<string> AllowedSids => _allowedSids;
+
+    /// <summary>
+    /// Grants the specified Windows account access to the Named Pipe.
+    /// </summary>
     public WindowsNamedPipeAccessOptions AllowAccount(string accountName)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(accountName);
@@ -28,11 +33,27 @@ public sealed class WindowsNamedPipeAccessOptions
         return this;
     }
 
-    /// <summary>Разрешает встроенную локальную группу Administrators.</summary>
+
+    /// <summary>
+    /// Grants the specified Windows security identifier access to the Named Pipe.
+    /// </summary>
+    public WindowsNamedPipeAccessOptions AllowSid(string sid)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(sid);
+        _ = new System.Security.Principal.SecurityIdentifier(sid);
+        _allowedSids.Add(sid.Trim());
+        return this;
+    }
+
+    /// <summary>
+    /// Permits members of the built-in Windows Administrators group to connect.
+    /// </summary>
     public WindowsNamedPipeAccessOptions AllowBuiltInAdministrators() =>
         AllowAccount(@"BUILTIN\Administrators");
 
-    /// <summary>Разрешает LocalSystem.</summary>
+    /// <summary>
+    /// Permits the Windows LocalSystem identity to connect.
+    /// </summary>
     public WindowsNamedPipeAccessOptions AllowLocalSystem() =>
         AllowAccount(@"NT AUTHORITY\SYSTEM");
 }

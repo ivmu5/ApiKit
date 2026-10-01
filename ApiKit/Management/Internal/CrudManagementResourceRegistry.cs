@@ -15,12 +15,8 @@ using Microsoft.Extensions.Options;
 namespace ApiKit.Management.Internal;
 
 /// <summary>
-/// Единый внутренний каталог обнаруженных CRUD-ресурсов.
+/// Discovers and caches the standard CRUD actions available through management.
 /// </summary>
-/// <remarks>
-/// Каталог используется и descriptor discovery, и management dispatcher, чтобы они
-/// не реализовывали независимо друг от друга правила определения имён и actions.
-/// </remarks>
 internal sealed class CrudManagementResourceRegistry(
     IServiceProvider serviceProvider,
     IOptions<ApiKitManagementOptions> options,
@@ -190,9 +186,6 @@ internal sealed class CrudManagementResourceRegistry(
 
     private static ManagementResourceOperation? TryGetOperation(ControllerActionDescriptor action)
     {
-        // Management публикует только стандартные CRUD actions, помеченные внутренним
-        // маркером CrudController. Пользовательские GET/POST методы в том же контроллере
-        // не должны автоматически превращаться в management CRUD-операции.
         var crudOperation = action.MethodInfo
             .GetCustomAttributes<CrudOperationAttribute>(inherit: true)
             .FirstOrDefault();

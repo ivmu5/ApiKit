@@ -1,22 +1,32 @@
 namespace ApiKit.Management.Security;
 
 /// <summary>
-/// Результат криптографической проверки management peer.
+/// Defines a result of management authentication result.
 /// </summary>
 public sealed record ManagementAuthenticationResult
 {
-    /// <summary>Показывает, была ли identity peer успешно подтверждена.</summary>
+    /// <summary>
+    /// Gets or sets whether succeeded is enabled.
+    /// </summary>
     public required bool Succeeded { get; init; }
 
-    /// <summary>Подтверждённая identity peer при успешной проверке.</summary>
+    /// <summary>
+    /// Gets or sets identity.
+    /// </summary>
     public ManagementPeerIdentity? Identity { get; init; }
 
-    /// <summary>Идентификатор credential, которым peer подтвердил свою identity.</summary>
+    /// <summary>
+    /// Gets or sets credential id.
+    /// </summary>
     public string? CredentialId { get; init; }
 
-    /// <summary>Стабильный машинно-читаемый код причины отказа.</summary>
+    /// <summary>
+    /// Gets or sets failure code.
+    /// </summary>
     public string? FailureCode { get; init; }
 
-    /// <summary>Диагностическое описание причины отказа. Не должно содержать секретный key material.</summary>
+    /// <summary>
+    /// Gets or sets failure reason.
+    /// </summary>
     public string? FailureReason { get; init; }
 }

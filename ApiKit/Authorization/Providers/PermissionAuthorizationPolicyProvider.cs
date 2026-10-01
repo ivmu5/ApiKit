@@ -25,8 +25,6 @@ internal sealed class PermissionAuthorizationPolicyProvider : IAuthorizationPoli
         _permissionNameResolver = permissionNameResolver;
     }
 
-    // Все политики ApiKit зависят только от настроек, фиксируемых при запуске,
-    // поэтому ASP.NET Core может безопасно кэшировать результаты поставщика.
     public bool AllowsCachingPolicies => true;
 
     public Task<AuthorizationPolicy?> GetPolicyAsync(string policyName)

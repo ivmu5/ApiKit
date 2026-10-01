@@ -1,40 +1,62 @@
 namespace ApiKit.Management;
 
 /// <summary>
-/// Стандартные имена возможностей management plane.
+/// Defines standard management feature identifiers published by services.
 /// </summary>
 public static class ManagementCapabilities
 {
-    /// <summary>Сервис публикует адреса ASP.NET Core server.</summary>
+    /// <summary>
+    /// Gets or sets addresses.
+    /// </summary>
     public const string Addresses = "addresses";
 
-    /// <summary>Сервис публикует metadata HTTP endpoints.</summary>
+    /// <summary>
+    /// Gets or sets endpoints.
+    /// </summary>
     public const string Endpoints = "endpoints";
 
-    /// <summary>Сервис публикует CRUD-ресурсы.</summary>
+    /// <summary>
+    /// Gets or sets resources.
+    /// </summary>
     public const string Resources = "resources";
 
-    /// <summary>Сервис предоставляет произвольные management-операции.</summary>
+    /// <summary>
+    /// Gets or sets operations.
+    /// </summary>
     public const string Operations = "operations";
 
-    /// <summary>Сервис предоставляет health metadata или проверки.</summary>
+    /// <summary>
+    /// Gets or sets health.
+    /// </summary>
     public const string Health = "health";
 
-    /// <summary>Сервис предоставляет управляемую конфигурацию.</summary>
+    /// <summary>
+    /// Gets or sets configuration.
+    /// </summary>
     public const string Configuration = "configuration";
 
-    /// <summary>Сервис предоставляет diagnostics metadata.</summary>
+    /// <summary>
+    /// Gets or sets diagnostics.
+    /// </summary>
     public const string Diagnostics = "diagnostics";
 
-    /// <summary>Сервис предоставляет журналы через management plane.</summary>
+    /// <summary>
+    /// Gets or sets logs.
+    /// </summary>
     public const string Logs = "logs";
 
-    /// <summary>Сервис предоставляет метрики через management plane.</summary>
+    /// <summary>
+    /// Gets or sets metrics.
+    /// </summary>
     public const string Metrics = "metrics";
 
-    /// <summary>Management host умеет управлять жизненным циклом сервисов.</summary>
+    /// <summary>
+    /// Gets or sets lifecycle.
+    /// </summary>
     public const string Lifecycle = "lifecycle";
 
-    /// <summary>Management host умеет устанавливать и удалять сервисы.</summary>
+    /// <summary>
+    /// Gets or sets installation.
+    /// </summary>
     public const string Installation = "installation";
 }

@@ -17,35 +17,26 @@ public abstract partial class CrudController<
     where TUpdateModel : class
 {
     /// <summary>
-    /// Создаёт базовый запрос чтения без change tracking.
+    /// Creates read query.
     /// </summary>
-    /// <returns>Базовый запрос чтения.</returns>
+    /// <returns>The created value.</returns>
     protected virtual IQueryable<TEntity> CreateReadQuery() =>
         Entities.AsNoTracking();
 
     /// <summary>
-    /// Формирует collection query до подсчёта и пагинации.
+    /// Creates list query.
     /// </summary>
-    /// <param name="options">Параметры пагинации.</param>
-    /// <returns>Запрос коллекции.</returns>
-    /// <remarks>
-    /// Это основная точка расширения для обычного LINQ: <c>Where</c>, <c>Include</c>
-    /// и других предметных ограничений. Если нужен собственный набор query-параметров,
-    /// можно переопределить <see cref="GetAll"/> целиком.
-    /// </remarks>
+    /// <param name="options">The configuration options.</param>
+    /// <returns>The created value.</returns>
     protected virtual IQueryable<TEntity> CreateListQuery(CrudPageOptions options) =>
         CreateReadQuery();
 
     /// <summary>
-    /// Применяет порядок к collection query перед offset-пагинацией.
+    /// Applies list ordering.
     /// </summary>
-    /// <param name="query">Исходный запрос.</param>
-    /// <param name="options">Параметры пагинации.</param>
-    /// <returns>Упорядоченный запрос.</returns>
-    /// <remarks>
-    /// По умолчанию используется единственный первичный ключ, чтобы порядок страниц был
-    /// детерминированным. Пользовательскую сортировку можно задать обычным LINQ.
-    /// </remarks>
+    /// <param name="query">The query value.</param>
+    /// <param name="options">The configuration options.</param>
+    /// <returns>The result of the operation.</returns>
     protected virtual IQueryable<TEntity> ApplyListOrdering(
         IQueryable<TEntity> query,
         CrudPageOptions options) =>
@@ -54,12 +45,12 @@ public abstract partial class CrudController<
             EfEntityMetadata.GetSinglePrimaryKeyProperty<TEntity>(DbContext));
 
     /// <summary>
-    /// Применяет стандартную offset-пагинацию через <c>Skip</c>/<c>Take</c>.
+    /// Applies pagination.
     /// </summary>
-    /// <param name="query">Исходный запрос.</param>
-    /// <param name="page">Номер страницы, начиная с 1.</param>
-    /// <param name="pageSize">Размер страницы.</param>
-    /// <returns>Запрос с применённой пагинацией.</returns>
+    /// <param name="query">The query value.</param>
+    /// <param name="page">The page number.</param>
+    /// <param name="pageSize">The maximum number of items per page.</param>
+    /// <returns>The result of the operation.</returns>
     protected virtual IQueryable<TEntity> ApplyPagination(
         IQueryable<TEntity> query,
         int page,
@@ -70,19 +61,19 @@ public abstract partial class CrudController<
     }
 
     /// <summary>
-    /// Возвращает итоговый размер страницы.
+    /// Resolves page size.
     /// </summary>
-    /// <param name="options">Параметры пагинации.</param>
-    /// <returns>Размер страницы.</returns>
+    /// <param name="options">The configuration options.</param>
+    /// <returns>The result of the operation.</returns>
     protected virtual int ResolvePageSize(CrudPageOptions options) =>
         options.PageSize ?? DefaultPageSize;
 
     /// <summary>
-    /// Ищет entity для GET без change tracking.
+    /// Finds read entity async.
     /// </summary>
-    /// <param name="id">Первичный ключ.</param>
-    /// <param name="cancellationToken">Токен отмены.</param>
-    /// <returns>Найденная entity или <see langword="null"/>.</returns>
+    /// <param name="id">The primary key of the resource.</param>
+    /// <param name="cancellationToken">A token that cancels this operation.</param>
+    /// <returns>The result of the operation.</returns>
     protected virtual Task<TEntity?> FindReadEntityAsync(
         TKey id,
         CancellationToken cancellationToken)
@@ -95,11 +86,11 @@ public abstract partial class CrudController<
     }
 
     /// <summary>
-    /// Ищет отслеживаемую entity для операций изменения.
+    /// Finds entity async.
     /// </summary>
-    /// <param name="id">Первичный ключ.</param>
-    /// <param name="cancellationToken">Токен отмены.</param>
-    /// <returns>Найденная entity или <see langword="null"/>.</returns>
+    /// <param name="id">The primary key of the resource.</param>
+    /// <param name="cancellationToken">A token that cancels this operation.</param>
+    /// <returns>The result of the operation.</returns>
     protected virtual ValueTask<TEntity?> FindEntityAsync(
         TKey id,
         CancellationToken cancellationToken) =>

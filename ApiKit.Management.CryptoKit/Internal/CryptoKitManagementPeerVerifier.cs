@@ -1,5 +1,6 @@
 using System.Security.Cryptography;
 using ApiKit.Management.Abstractions;
+using ApiKit.Management.CryptoKit.Models;
 using ApiKit.Management.CryptoKit.Security;
 using ApiKit.Management.Models;
 using ApiKit.Management.Security;
@@ -63,7 +64,7 @@ internal sealed class CryptoKitManagementPeerVerifier(
             return Failure("transport_mismatch", "Management challenge выпущен для другого transport.");
         }
 
-        if (transportPeer.Properties.TryGetValue("purpose", out var transportPurpose) &&
+        if (!transportPeer.Properties.TryGetValue("purpose", out var transportPurpose) ||
             !StringComparer.Ordinal.Equals(transportPurpose, challenge.Purpose))
         {
             return Failure("purpose_mismatch", "Management challenge выпущен для другого назначения соединения.");
@@ -97,15 +98,28 @@ internal sealed class CryptoKitManagementPeerVerifier(
 
         try
         {
-            var publicKey = await _trustStore.TryGetPublicKeyAsync(
+            var trustedCredential = await _trustStore.TryGetAsync(
                     response.Responder,
                     response.CredentialId,
                     cancellationToken)
                 .ConfigureAwait(false);
 
-            if (publicKey is null)
+            if (trustedCredential is null)
             {
                 return Failure("credential_untrusted", "Для указанного management credential отсутствует trusted public key.");
+            }
+
+            if (trustedCredential.Status == CryptoKitManagementTrustedCredentialStatus.Retiring)
+            {
+                if (trustedCredential.AcceptUntilUtc is null)
+                {
+                    return Failure("credential_state", "Retiring trusted credential не содержит срока overlap.");
+                }
+
+                if (now > trustedCredential.AcceptUntilUtc.Value + clockSkew)
+                {
+                    return Failure("credential_retired", "Overlap-период retiring management credential завершён.");
+                }
             }
 
             var payload = ManagementChallengeProofPayload.Create(
@@ -114,19 +128,10 @@ internal sealed class CryptoKitManagementPeerVerifier(
                 response.CredentialId,
                 response.CreatedAtUtc);
 
-            using var rsa = RSA.Create();
-            rsa.ImportSubjectPublicKeyInfo(publicKey, out var bytesRead);
-
-            if (bytesRead != publicKey.Length)
-            {
-                return Failure("public_key_invalid", "Trusted public key имеет некорректный формат.");
-            }
-
-            var valid = rsa.VerifyData(
+            var valid = CryptoKitManagementRsaProof.Verify(
+                trustedCredential.PublicKeySubjectPublicKeyInfo,
                 payload,
-                response.Proof,
-                HashAlgorithmName.SHA256,
-                RSASignaturePadding.Pss);
+                response.Proof);
 
             return valid
                 ? new ManagementAuthenticationResult
@@ -139,11 +144,15 @@ internal sealed class CryptoKitManagementPeerVerifier(
         }
         catch (CryptographicException)
         {
-            return Failure("public_key_invalid", "Trusted public key имеет некорректный RSA-формат.");
+            return Failure("public_key_invalid", "Trusted public key или trust record имеет некорректный криптографический формат.");
         }
         catch (ArgumentException)
         {
             return Failure("response_invalid", "Challenge response содержит некорректные security-параметры.");
+        }
+        catch (InvalidOperationException)
+        {
+            return Failure("credential_state", "Trusted credential state имеет некорректный формат или состояние.");
         }
     }
 

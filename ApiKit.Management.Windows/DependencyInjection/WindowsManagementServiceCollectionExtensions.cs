@@ -11,21 +11,13 @@ using Microsoft.Extensions.Options;
 namespace ApiKit.Management.Windows;
 
 /// <summary>
-/// Регистрирует Windows Named Pipe transport для management plane ApiKit.
+/// Registers the Windows management transport, management host, and administrative client.
 /// </summary>
 public static class WindowsManagementServiceCollectionExtensions
 {
     /// <summary>
-    /// Подключает управляемый микросервис к локальному management host через Named Pipes.
+    /// Registers windows named pipe transport.
     /// </summary>
-    /// <remarks>
-    /// Метод добавляет publisher регистрации, management pipe сервиса и transport metadata.
-    /// По умолчанию pipe доступен только текущей Windows identity.
-    /// Начиная с protocol v5 transport требует взаимную криптографическую аутентификацию:
-    /// сервис проверяет <see cref="ManagementPeerKind.ManagementHost"/>, а затем доказывает собственную identity.
-    /// Для этого должны быть зарегистрированы <see cref="IManagementCredentialProvider"/> и
-    /// <see cref="IManagementPeerVerifier"/>.
-    /// </remarks>
     public static ApiKitManagementBuilder AddWindowsNamedPipeTransport(
         this ApiKitManagementBuilder builder,
         Action<WindowsManagementServiceOptions>? configure = null)
@@ -37,6 +29,9 @@ public static class WindowsManagementServiceCollectionExtensions
         {
             optionsBuilder.Configure(configure);
         }
+
+        optionsBuilder.PostConfigure(
+            static options => WindowsManagedServiceIsolation.ApplyProvisionedManagementPipeAccess(options));
 
         optionsBuilder
             .Validate(static options => !string.IsNullOrWhiteSpace(options.ManagementHostPeerId), "ManagementHostPeerId не может быть пустым.")
@@ -67,14 +62,8 @@ public static class WindowsManagementServiceCollectionExtensions
     }
 
     /// <summary>
-    /// Добавляет локальный management host: registry, registration pipe, административный pipe
-    /// и proxy вызовов management-операций в микросервисы.
+    /// Registers API kit windows management host.
     /// </summary>
-    /// <remarks>
-    /// Registration pipe использует взаимный challenge-response: host сначала доказывает собственную identity,
-    /// после чего проверяет identity сервиса. Для исходящих management-вызовов host также доказывает свою identity
-    /// сервису и проверяет service credential перед передачей запроса.
-    /// </remarks>
     public static IServiceCollection AddApiKitWindowsManagementHost(
         this IServiceCollection services,
         Action<WindowsManagementHostOptions>? configure = null,
@@ -119,6 +108,22 @@ public static class WindowsManagementServiceCollectionExtensions
             hostOptions.Configure(configure);
         }
 
+        hostOptions.PostConfigure(static options =>
+        {
+            if (!options.UseProvisionedServiceSidAcl)
+            {
+                return;
+            }
+
+            options.RegistrationPipeAccess.CurrentUserOnly = false;
+            options.AdministrationPipeAccess.CurrentUserOnly = false;
+
+            if (options.AllowBuiltInAdministratorsOnAdministrationPipe)
+            {
+                options.AdministrationPipeAccess.AllowBuiltInAdministrators();
+            }
+        });
+
         hostOptions
             .Validate(static options => !string.IsNullOrWhiteSpace(options.ManagementHostPeerId), "ManagementHostPeerId не может быть пустым.")
             .Validate(static options => !string.IsNullOrWhiteSpace(options.RegistrationPipeName), "RegistrationPipeName не может быть пустым.")
@@ -136,10 +141,15 @@ public static class WindowsManagementServiceCollectionExtensions
         serviceManagementOptions
             .Validate(static options => !string.IsNullOrWhiteSpace(options.InstallRoot), "InstallRoot не может быть пустым.")
             .Validate(static options => !string.IsNullOrWhiteSpace(options.ServiceAccount), "ServiceAccount не может быть пустым.")
+            .Validate(
+                static options => !options.ProtectManagedDirectories || options.EnableServiceSidIsolation,
+                "ProtectManagedDirectories требует EnableServiceSidIsolation, иначе сервис не получит уникальный SID для ACL.")
             .Validate(static options => options.OperationTimeout > TimeSpan.Zero, "OperationTimeout должен быть больше нуля.")
+            .Validate(static options => options.RegistrationTimeout > TimeSpan.Zero, "RegistrationTimeout должен быть больше нуля.")
             .ValidateOnStart();
 
         services.TryAddSingleton<IManagementPeerAuthenticator, WindowsNamedPipePeerAuthenticator>();
+        services.TryAddSingleton<WindowsManagedServiceIsolationRegistry>();
         services.TryAddSingleton<WindowsNamedPipeManagedServiceClient>();
         services.TryAddSingleton<IManagedServiceLifecycleController, WindowsManagedServiceLifecycleController>();
         services.TryAddSingleton<IManagedServiceInstaller, WindowsManagedServiceInstaller>();
@@ -150,15 +160,8 @@ public static class WindowsManagementServiceCollectionExtensions
     }
 
     /// <summary>
-    /// Добавляет клиент админ-панели, использующий административный Named Pipe management host.
+    /// Registers API kit windows management client.
     /// </summary>
-    /// <remarks>
-    /// Protocol v6 использует взаимный challenge-response: клиент сначала проверяет
-    /// <see cref="ManagementPeerKind.ManagementHost"/>, затем доказывает собственную
-    /// <see cref="ManagementPeerKind.AdminClient"/> identity. Для этого должны быть
-    /// зарегистрированы <see cref="IManagementCredentialProvider"/> и
-    /// <see cref="IManagementPeerVerifier"/>.
-    /// </remarks>
     public static IServiceCollection AddApiKitWindowsManagementClient(
         this IServiceCollection services,
         Action<WindowsManagementClientOptions>? configure = null)
@@ -197,7 +200,7 @@ public static class WindowsManagementServiceCollectionExtensions
     }
 
     /// <summary>
-    /// Настраивает текущий .NET host для запуска как Windows Service.
+    /// Registers API kit windows service.
     /// </summary>
     public static IServiceCollection AddApiKitWindowsService(
         this IServiceCollection services,

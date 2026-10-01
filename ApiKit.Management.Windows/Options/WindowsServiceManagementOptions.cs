@@ -1,12 +1,12 @@
 namespace ApiKit.Management.Windows.Options;
 
 /// <summary>
-/// Настройки управления Windows Services через management host.
+/// Configures Windows service installation, credential provisioning, ACL isolation, and lifecycle behavior.
 /// </summary>
 public sealed class WindowsServiceManagementOptions
 {
     /// <summary>
-    /// Корневой каталог, в который устанавливаются управляемые сервисы.
+    /// Gets or sets install root.
     /// </summary>
     public string InstallRoot { get; set; } = Path.Combine(
         Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
@@ -14,27 +14,59 @@ public sealed class WindowsServiceManagementOptions
         "Services");
 
     /// <summary>
-    /// Учётная запись Windows, от имени которой запускаются устанавливаемые сервисы.
+    /// Gets or sets service account.
     /// </summary>
-    /// <remarks>
-    /// По умолчанию используется LocalService. Для более строгой изоляции рекомендуется
-    /// задавать отдельные service identities при развёртывании.
-    /// </remarks>
     public string ServiceAccount { get; set; } = @"NT AUTHORITY\LocalService";
 
     /// <summary>
-    /// Максимальное время ожидания перехода Windows Service в требуемое состояние.
+    /// Gets or sets whether service SID isolation is enabled.
+    /// </summary>
+    public bool EnableServiceSidIsolation { get; set; } = true;
+
+    /// <summary>
+    /// Gets or sets whether managed directories is enabled.
+    /// </summary>
+    public bool ProtectManagedDirectories { get; set; } = true;
+
+    /// <summary>
+    /// Gets or sets whether built in administrators full control is enabled.
+    /// </summary>
+    public bool AllowBuiltInAdministratorsFullControl { get; set; } = true;
+
+    /// <summary>
+    /// Gets or sets whether local system full control is enabled.
+    /// </summary>
+    public bool AllowLocalSystemFullControl { get; set; } = true;
+
+    /// <summary>
+    /// Gets or sets operation timeout.
     /// </summary>
     public TimeSpan OperationTimeout { get; set; } = TimeSpan.FromSeconds(30);
 
     /// <summary>
-    /// Требовать хотя бы один <see cref="ApiKit.Management.Abstractions.IManagedServicePackageVerifier"/>
-    /// перед установкой или обновлением пакета.
+    /// Gets or sets whether package verifier is enabled.
     /// </summary>
     public bool RequirePackageVerifier { get; set; } = true;
 
+
     /// <summary>
-    /// Запускать установленный сервис автоматически после установки.
+    /// Gets or sets whether credential provisioner is enabled.
+    /// </summary>
+    public bool RequireCredentialProvisioner { get; set; } = true;
+
+    /// <summary>
+    /// Gets or sets whether the service is started after installation.
     /// </summary>
     public bool StartAfterInstall { get; set; } = true;
+
+    /// <summary>
+    /// Gets or sets whether the system should wait for authenticated registration is enabled.
+    /// </summary>
+    public bool WaitForAuthenticatedRegistration { get; set; } = true;
+
+    /// <summary>
+    /// Gets or sets registration timeout.
+    /// </summary>
+    public TimeSpan RegistrationTimeout { get; set; } = TimeSpan.FromSeconds(30);
+
 }

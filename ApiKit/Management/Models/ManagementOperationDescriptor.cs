@@ -1,28 +1,42 @@
 namespace ApiKit.Management.Models;
 
 /// <summary>
-/// Описывает произвольную management-операцию сервиса.
+/// Describes an administrative operation, its input, and authorization requirements.
 /// </summary>
 public sealed record ManagementOperationDescriptor
 {
-    /// <summary>Стабильное техническое имя операции.</summary>
+    /// <summary>
+    /// Gets or sets name.
+    /// </summary>
     public required string Name { get; init; }
 
-    /// <summary>Отображаемое имя операции.</summary>
+    /// <summary>
+    /// Gets or sets display name.
+    /// </summary>
     public required string DisplayName { get; init; }
 
-    /// <summary>Описание назначения операции.</summary>
+    /// <summary>
+    /// Gets or sets description.
+    /// </summary>
     public string? Description { get; init; }
 
-    /// <summary>Группа операции.</summary>
+    /// <summary>
+    /// Gets or sets group name.
+    /// </summary>
     public string? GroupName { get; init; }
 
-    /// <summary>Имя типа входной модели.</summary>
+    /// <summary>
+    /// Gets or sets request type name.
+    /// </summary>
     public required string RequestTypeName { get; init; }
 
-    /// <summary>Имя типа результата.</summary>
+    /// <summary>
+    /// Gets or sets result type name.
+    /// </summary>
     public required string ResultTypeName { get; init; }
 
-    /// <summary>ASP.NET Core authorization policy, необходимая для выполнения операции.</summary>
+    /// <summary>
+    /// Gets or sets authorization policy.
+    /// </summary>
     public required string AuthorizationPolicy { get; init; }
 }

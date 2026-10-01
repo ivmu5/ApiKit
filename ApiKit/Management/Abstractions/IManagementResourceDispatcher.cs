@@ -5,24 +5,21 @@ using ApiKit.Management.Models;
 namespace ApiKit.Management.Abstractions;
 
 /// <summary>
-/// Выполняет management-запросы к CRUD-ресурсам внутри текущего ASP.NET Core сервиса.
+/// Defines the contract for i management resource dispatcher.
 /// </summary>
-/// <remarks>
-/// Реализация должна сохранять штатный MVC pipeline ресурса: model binding, validation,
-/// authorization filters, переопределённые actions и формирование HTTP-результатов.
-/// Transport-модули используют этот интерфейс как локальную границу сервиса.
-/// </remarks>
 public interface IManagementResourceDispatcher
 {
-    /// <summary>Выполняет стандартную операцию над CRUD-ресурсом.</summary>
-    /// <param name="resourceName">Стабильное management-имя ресурса.</param>
-    /// <param name="operation">Операция над ресурсом.</param>
-    /// <param name="principal">Аутентифицированный management principal.</param>
-    /// <param name="key">Сериализованный ключ ресурса, если он требуется.</param>
-    /// <param name="model">Сериализованная входная модель или JSON Patch документ.</param>
-    /// <param name="page">Номер страницы для <see cref="ManagementResourceOperation.List"/>.</param>
-    /// <param name="pageSize">Размер страницы для <see cref="ManagementResourceOperation.List"/>.</param>
-    /// <param name="cancellationToken">Токен отмены операции.</param>
+    /// <summary>
+    /// Executes async.
+    /// </summary>
+    /// <param name="resourceName">The management resource name.</param>
+    /// <param name="operation">The requested operation.</param>
+    /// <param name="principal">The authenticated caller principal.</param>
+    /// <param name="key">The resource key.</param>
+    /// <param name="model">The input data model.</param>
+    /// <param name="page">The page number.</param>
+    /// <param name="pageSize">The maximum number of items per page.</param>
+    /// <param name="cancellationToken">A token that cancels this operation.</param>
     ValueTask<ManagementResourceExecutionResult> ExecuteAsync(
         string resourceName,
         ManagementResourceOperation operation,

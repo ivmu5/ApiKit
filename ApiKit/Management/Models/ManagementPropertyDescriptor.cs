@@ -1,31 +1,47 @@
 namespace ApiKit.Management.Models;
 
 /// <summary>
-/// Описывает сериализуемое свойство management-модели.
+/// Describes a property of a management resource model.
 /// </summary>
 public sealed record ManagementPropertyDescriptor
 {
-    /// <summary>CLR-имя свойства.</summary>
+    /// <summary>
+    /// Gets or sets name.
+    /// </summary>
     public required string Name { get; init; }
 
-    /// <summary>Имя свойства в JSON с учётом System.Text.Json configuration.</summary>
+    /// <summary>
+    /// Gets or sets JSON name.
+    /// </summary>
     public required string JsonName { get; init; }
 
-    /// <summary>Полное CLR-имя типа свойства.</summary>
+    /// <summary>
+    /// Gets or sets type name.
+    /// </summary>
     public required string TypeName { get; init; }
 
-    /// <summary>Указывает, допускает ли свойство null.</summary>
+    /// <summary>
+    /// Gets or sets whether is nullable is enabled.
+    /// </summary>
     public required bool IsNullable { get; init; }
 
-    /// <summary>Указывает, обязательно ли значение модели.</summary>
+    /// <summary>
+    /// Gets or sets whether is required is enabled.
+    /// </summary>
     public required bool IsRequired { get; init; }
 
-    /// <summary>Указывает, отсутствует ли публичный setter.</summary>
+    /// <summary>
+    /// Gets or sets whether is read only is enabled.
+    /// </summary>
     public required bool IsReadOnly { get; init; }
 
-    /// <summary>Указывает, является ли свойство коллекцией.</summary>
+    /// <summary>
+    /// Gets or sets whether is collection is enabled.
+    /// </summary>
     public required bool IsCollection { get; init; }
 
-    /// <summary>Допустимые текстовые значения enum, если тип свойства является enum.</summary>
+    /// <summary>
+    /// Gets or sets allowed values.
+    /// </summary>
     public IReadOnlyList<string> AllowedValues { get; init; } = [];
 }

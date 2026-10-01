@@ -3,10 +3,12 @@ using ApiKit.Management.Models;
 namespace ApiKit.Management.Abstractions;
 
 /// <summary>
-/// Предоставляет стабильную идентификацию текущего экземпляра управляемого сервиса.
+/// Defines the contract for i management service identity provider.
 /// </summary>
 public interface IManagementServiceIdentityProvider
 {
-    /// <summary>Возвращает идентификацию текущего процесса сервиса.</summary>
+    /// <summary>
+    /// Returns identity.
+    /// </summary>
     ManagementServiceIdentity GetIdentity();
 }

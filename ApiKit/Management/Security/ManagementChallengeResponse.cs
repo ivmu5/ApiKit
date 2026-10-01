@@ -1,26 +1,32 @@
 namespace ApiKit.Management.Security;
 
 /// <summary>
-/// Содержит доказательство владения credential в ответ на <see cref="ManagementChallenge"/>.
+/// Contains the credential identifier, signed proof, and authenticated responder identity.
 /// </summary>
 public sealed record ManagementChallengeResponse
 {
-    /// <summary>Идентификатор challenge, для которого сформирован ответ.</summary>
+    /// <summary>
+    /// Gets or sets challenge id.
+    /// </summary>
     public required string ChallengeId { get; init; }
 
-    /// <summary>Identity участника, сформировавшего proof.</summary>
+    /// <summary>
+    /// Gets or sets responder.
+    /// </summary>
     public required ManagementPeerIdentity Responder { get; init; }
 
     /// <summary>
-    /// Идентификатор credential/key, использованного для proof. Позволяет поддерживать ротацию без изменения protocol contract.
+    /// Gets or sets credential id.
     /// </summary>
     public required string CredentialId { get; init; }
 
     /// <summary>
-    /// Непрозрачное для transport доказательство владения credential, например цифровая подпись challenge context.
+    /// Gets or sets proof.
     /// </summary>
     public required byte[] Proof { get; init; }
 
-    /// <summary>Время формирования ответа в UTC.</summary>
+    /// <summary>
+    /// Gets or sets created at utc.
+    /// </summary>
     public required DateTimeOffset CreatedAtUtc { get; init; }
 }

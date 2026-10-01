@@ -10,6 +10,7 @@ namespace ApiKit.Management.CryptoKit.Internal;
 
 internal sealed class CryptoKitManagementCredentialProvider(
     IRsaKeyProvider rsaKeyProvider,
+    CryptoKitManagementCredentialRegistry registry,
     CryptoKitManagementOptionsSnapshot options,
     TimeProvider timeProvider)
     : IManagementCredentialProvider,
@@ -18,20 +19,25 @@ internal sealed class CryptoKitManagementCredentialProvider(
     private readonly IRsaKeyProvider _rsaKeyProvider = rsaKeyProvider
         ?? throw new ArgumentNullException(nameof(rsaKeyProvider));
 
+    private readonly CryptoKitManagementCredentialRegistry _registry = registry
+        ?? throw new ArgumentNullException(nameof(registry));
+
     private readonly CryptoKitManagementOptionsSnapshot _options = options
         ?? throw new ArgumentNullException(nameof(options));
 
     private readonly TimeProvider _timeProvider = timeProvider
         ?? throw new ArgumentNullException(nameof(timeProvider));
 
-    public ValueTask<string> GetCredentialIdAsync(
+    public async ValueTask<string> GetCredentialIdAsync(
         ManagementPeerIdentity identity,
         CancellationToken cancellationToken = default)
     {
-        cancellationToken.ThrowIfCancellationRequested();
+        var credential = await _registry.GetActiveCredentialAsync(
+                identity,
+                cancellationToken)
+            .ConfigureAwait(false);
 
-        var credential = _options.GetActiveCredential(identity);
-        return ValueTask.FromResult(credential.CredentialId);
+        return credential.CredentialId;
     }
 
     public async ValueTask<ManagementChallengeResponse> CreateChallengeResponseAsync(
@@ -48,7 +54,11 @@ internal sealed class CryptoKitManagementCredentialProvider(
                 "Нельзя сформировать proof для management challenge, выпущенного для другой identity.");
         }
 
-        var credential = _options.GetActiveCredential(identity);
+        var credential = await _registry.GetActiveCredentialAsync(
+                identity,
+                cancellationToken)
+            .ConfigureAwait(false);
+
         var createdAtUtc = _timeProvider.GetUtcNow();
 
         if (createdAtUtc < challenge.IssuedAtUtc - _options.ClockSkew ||
@@ -73,19 +83,9 @@ internal sealed class CryptoKitManagementCredentialProvider(
 
         try
         {
-            using var rsa = RSA.Create();
-            rsa.ImportPkcs8PrivateKey(privateKey, out var bytesRead);
-
-            if (bytesRead != privateKey.Length)
-            {
-                throw new CryptographicException(
-                    "Закрытый management RSA-ключ содержит лишние или некорректные данные.");
-            }
-
-            var proof = rsa.SignData(
-                payload,
-                HashAlgorithmName.SHA256,
-                RSASignaturePadding.Pss);
+            var proof = CryptoKitManagementRsaProof.Sign(
+                privateKey,
+                payload);
 
             return new ManagementChallengeResponse
             {
@@ -108,8 +108,76 @@ internal sealed class CryptoKitManagementCredentialProvider(
     {
         ArgumentNullException.ThrowIfNull(identity);
 
-        var credential = _options.GetActiveCredential(identity);
-        var publicKey = credential.CreateIfMissing
+        var credential = await _registry.GetActiveCredentialAsync(
+                identity,
+                cancellationToken)
+            .ConfigureAwait(false);
+
+        return await ExportPublicCredentialAsync(
+                identity,
+                credential,
+                CryptoKitManagementLocalCredentialStatus.Active,
+                cancellationToken)
+            .ConfigureAwait(false);
+    }
+
+    public async ValueTask<CryptoKitManagementPublicCredential> GetAsync(
+        ManagementPeerIdentity identity,
+        string credentialId,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(identity);
+        ArgumentException.ThrowIfNullOrWhiteSpace(credentialId);
+
+        var (credential, status) = await _registry.GetCredentialAsync(
+                identity,
+                credentialId,
+                cancellationToken)
+            .ConfigureAwait(false);
+
+        return await ExportPublicCredentialAsync(
+                identity,
+                credential,
+                status,
+                cancellationToken)
+            .ConfigureAwait(false);
+    }
+
+    public async ValueTask<IReadOnlyList<CryptoKitManagementPublicCredential>> GetAllAsync(
+        ManagementPeerIdentity identity,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(identity);
+
+        var credentials = await _registry.GetCredentialsAsync(
+                identity,
+                cancellationToken)
+            .ConfigureAwait(false);
+
+        var result = new List<CryptoKitManagementPublicCredential>(credentials.Count);
+
+        foreach (var credential in credentials)
+        {
+            result.Add(await GetAsync(
+                    identity,
+                    credential.CredentialId,
+                    cancellationToken)
+                .ConfigureAwait(false));
+        }
+
+        return result;
+    }
+
+    private async ValueTask<CryptoKitManagementPublicCredential> ExportPublicCredentialAsync(
+        ManagementPeerIdentity identity,
+        CryptoKitManagementCredentialRegistration credential,
+        CryptoKitManagementLocalCredentialStatus status,
+        CancellationToken cancellationToken)
+    {
+        var canCreate = credential.CreateIfMissing &&
+                        status != CryptoKitManagementLocalCredentialStatus.Retired;
+
+        var publicKey = canCreate
             ? await _rsaKeyProvider.GetOrCreatePublicKeyAsync(
                     credential.KeyId,
                     cancellationToken)
@@ -122,7 +190,8 @@ internal sealed class CryptoKitManagementCredentialProvider(
         return new CryptoKitManagementPublicCredential(
             identity,
             credential.CredentialId,
-            publicKey);
+            publicKey,
+            status);
     }
 
     private ValueTask<RsaKeyPair> GetKeyPairAsync(

@@ -3,26 +3,34 @@ using ApiKit.Management.Lifecycle;
 namespace ApiKit.Management.Abstractions;
 
 /// <summary>
-/// Абстракция management host для управления жизненным циклом установленных сервисов.
+/// Defines the contract for i managed service lifecycle controller.
 /// </summary>
 public interface IManagedServiceLifecycleController
 {
-    /// <summary>Возвращает состояние сервиса.</summary>
+    /// <summary>
+    /// Returns state async.
+    /// </summary>
     ValueTask<ManagedServiceState> GetStateAsync(
         string serviceName,
         CancellationToken cancellationToken = default);
 
-    /// <summary>Запускает сервис.</summary>
+    /// <summary>
+    /// Starts async.
+    /// </summary>
     ValueTask StartAsync(
         string serviceName,
         CancellationToken cancellationToken = default);
 
-    /// <summary>Останавливает сервис.</summary>
+    /// <summary>
+    /// Stops async.
+    /// </summary>
     ValueTask StopAsync(
         string serviceName,
         CancellationToken cancellationToken = default);
 
-    /// <summary>Перезапускает сервис.</summary>
+    /// <summary>
+    /// Restarts the specified managed service.
+    /// </summary>
     ValueTask RestartAsync(
         string serviceName,
         CancellationToken cancellationToken = default);

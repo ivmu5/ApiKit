@@ -4,35 +4,29 @@ using System.Text;
 namespace ApiKit.Management.Security;
 
 /// <summary>
-/// Формирует каноническое бинарное представление management challenge,
-/// которое должно использоваться при создании и проверке криптографического proof.
+/// Builds the canonical, domain-separated binary representation that is signed during challenge-response authentication.
 /// </summary>
 /// <remarks>
-/// <para>
-/// Формат намеренно не зависит от JSON-настроек transport. Все строки кодируются UTF-8
-/// с 32-битным big-endian префиксом длины, числовые значения — в big-endian.
-/// </para>
-/// <para>
-/// В proof включается security identity и protocol context, но не произвольная
-/// <see cref="ManagementPeerIdentity.Metadata"/>, поскольку metadata не является
-/// самостоятельным источником доверия.
-/// </para>
+/// The format binds both peer identities, nonce, transport, purpose, protocol version, and timestamps. Identity metadata is descriptive only and is deliberately excluded from signatures.
 /// </remarks>
 public static class ManagementChallengeProofPayload
 {
+    private static readonly Encoding StrictUtf8 =
+        new UTF8Encoding(encoderShouldEmitUTF8Identifier: false, throwOnInvalidBytes: true);
+
     private static readonly byte[] DomainSeparator =
         "ApiKit.Management.ChallengeProof"u8.ToArray();
 
     private const byte FormatVersion = 1;
 
     /// <summary>
-    /// Создаёт канонический набор байт для подписи или проверки proof.
+    /// Serializes the complete challenge-response context into canonical bytes for signing or verification.
     /// </summary>
-    /// <param name="challenge">Проверяемый challenge.</param>
-    /// <param name="responder">Identity участника, формирующего ответ.</param>
-    /// <param name="credentialId">Публичный идентификатор credential.</param>
-    /// <param name="createdAtUtc">Время формирования ответа в UTC.</param>
-    /// <returns>Новый массив с каноническим представлением контекста proof.</returns>
+    /// <param name="challenge">The challenge to process.</param>
+    /// <param name="responder">The response issuer identity.</param>
+    /// <param name="credentialId">The credential identifier.</param>
+    /// <param name="createdAtUtc">The UTC timestamp when the response was created.</param>
+    /// <returns>The created value.</returns>
     public static byte[] Create(
         ManagementChallenge challenge,
         ManagementPeerIdentity responder,
@@ -130,7 +124,7 @@ public static class ManagementChallengeProofPayload
     {
         ArgumentNullException.ThrowIfNull(value);
 
-        var byteCount = Encoding.UTF8.GetByteCount(value);
+        var byteCount = StrictUtf8.GetByteCount(value);
         WriteInt32(stream, byteCount);
 
         if (byteCount == 0)
@@ -138,7 +132,7 @@ public static class ManagementChallengeProofPayload
             return;
         }
 
-        var bytes = Encoding.UTF8.GetBytes(value);
+        var bytes = StrictUtf8.GetBytes(value);
         stream.Write(bytes);
     }
 

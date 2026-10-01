@@ -10,17 +10,16 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 namespace ApiKit.Management;
 
 /// <summary>
-/// Содержит регистрацию management plane контрактов и автоматического обнаружения сервиса.
+/// Defines extension methods for management service collection extensions.
 /// </summary>
 public static class ManagementServiceCollectionExtensions
 {
     /// <summary>
-    /// Добавляет service identity, endpoint/CRUD discovery, management operations
-    /// и автоматическую публикацию через зарегистрированные <see cref="IManagementServicePublisher"/>.
+    /// Registers API kit management.
     /// </summary>
-    /// <param name="services">Коллекция сервисов приложения.</param>
-    /// <param name="configure">Необязательная настройка текущего управляемого сервиса.</param>
-    /// <returns>Builder для регистрации дополнительных management-возможностей.</returns>
+    /// <param name="services">The dependency injection service collection.</param>
+    /// <param name="configure">An optional configuration callback.</param>
+    /// <returns>The builder or service collection for further configuration.</returns>
     public static ApiKitManagementBuilder AddApiKitManagement(
         this IServiceCollection services,
         Action<ApiKitManagementOptions>? configure = null)
@@ -87,12 +86,8 @@ public static class ManagementServiceCollectionExtensions
     }
 
     /// <summary>
-    /// Добавляет потокобезопасный in-memory registry для management host или интеграционных тестов.
+    /// Registers API kit management registry.
     /// </summary>
-    /// <remarks>
-    /// Registry не является межпроцессным transport. Named Pipes/Unix Domain Sockets должны
-    /// передавать регистрации в этот интерфейс из отдельного transport-модуля.
-    /// </remarks>
     public static IServiceCollection AddApiKitManagementRegistry(this IServiceCollection services)
     {
         ArgumentNullException.ThrowIfNull(services);

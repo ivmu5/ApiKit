@@ -1,28 +1,32 @@
 namespace ApiKit.Management.Windows.Options;
 
 /// <summary>
-/// Настройки Named Pipe клиента админ-панели.
+/// Defines configuration settings for windows management client options.
 /// </summary>
 public sealed class WindowsManagementClientOptions
 {
     /// <summary>
-    /// Стабильный security identifier административного клиента.
-    /// Должен иметь собственный credential в настроенном management security provider.
+    /// Gets or sets admin client peer id.
     /// </summary>
     public string AdminClientPeerId { get; set; } = "admin-client";
 
     /// <summary>
-    /// Ожидаемый security identifier локального management host.
-    /// Клиент проверяет его до отправки собственного proof и административного запроса.
+    /// Gets or sets management host peer id.
     /// </summary>
     public string ManagementHostPeerId { get; set; } = "management-host";
 
-    /// <summary>Pipe локального management host.</summary>
+    /// <summary>
+    /// Gets or sets administration pipe name.
+    /// </summary>
     public string AdministrationPipeName { get; set; } = "ApiKit.Management.Admin";
 
-    /// <summary>Максимальное время подключения.</summary>
+    /// <summary>
+    /// Gets or sets connect timeout.
+    /// </summary>
     public TimeSpan ConnectTimeout { get; set; } = TimeSpan.FromSeconds(5);
 
-    /// <summary>Максимальный размер одного transport-сообщения.</summary>
+    /// <summary>
+    /// Gets or sets max message bytes.
+    /// </summary>
     public int MaxMessageBytes { get; set; } = 4 * 1024 * 1024;
 }

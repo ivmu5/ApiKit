@@ -55,7 +55,6 @@ internal sealed class WindowsNamedPipeManagementServicePublisher(
             settings.RegistrationPipeName,
             WindowsManagementTransportDefaults.RegistrationPurpose);
 
-        // Host доказывает identity первым. Сервис не подписывает challenge неизвестной стороны.
         var hostAuthentication = await WindowsNamedPipeChallengeResponseProtocol.VerifyIdentityAsync(
             pipe,
             serviceIdentity,

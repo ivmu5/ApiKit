@@ -4,15 +4,12 @@ using ApiKit.Management.Models;
 namespace ApiKit.Management.Abstractions;
 
 /// <summary>
-/// Клиентская абстракция для вызова management-операций конкретного экземпляра сервиса.
+/// Defines the contract for i management operation client.
 /// </summary>
-/// <remarks>
-/// Реализация админ-панели может использовать этот контракт независимо от IPC-технологии.
-/// </remarks>
 public interface IManagementOperationClient
 {
     /// <summary>
-    /// Выполняет management-операцию на удалённом экземпляре сервиса.
+    /// Executes async.
     /// </summary>
     ValueTask<ManagementOperationExecutionResult> ExecuteAsync(
         string instanceId,

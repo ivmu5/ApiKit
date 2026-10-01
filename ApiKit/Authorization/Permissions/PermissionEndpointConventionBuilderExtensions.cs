@@ -3,18 +3,17 @@ using Microsoft.AspNetCore.Builder;
 namespace ApiKit.Authorization.Permissions;
 
 /// <summary>
-/// Содержит расширения Minimal API для permission-based authorization.
+/// Defines extension methods for permission endpoint convention builder extensions.
 /// </summary>
 public static class PermissionEndpointConventionBuilderExtensions
 {
     /// <summary>
-    /// Требует permission, автоматически сформированное
-    /// по типу ресурса и стандартной операции.
+    /// Adds an ASP.NET Core authorization requirement for the specified permission.
     /// </summary>
-    /// <typeparam name="TResource">Тип API-ресурса.</typeparam>
-    /// <param name="builder">Builder endpoint.</param>
-    /// <param name="operation">Операция над ресурсом.</param>
-    /// <returns>Исходный builder endpoint.</returns>
+    /// <typeparam name="TResource">The t resource type.</typeparam>
+    /// <param name="builder">The service or endpoint builder.</param>
+    /// <param name="operation">The requested operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static IEndpointConventionBuilder RequirePermission<TResource>(
         this IEndpointConventionBuilder builder,
         PermissionOperation operation)
@@ -26,13 +25,12 @@ public static class PermissionEndpointConventionBuilderExtensions
     }
 
     /// <summary>
-    /// Требует permission, автоматически сформированное
-    /// по типу ресурса и произвольной операции.
+    /// Adds an ASP.NET Core authorization requirement for the specified permission.
     /// </summary>
-    /// <typeparam name="TResource">Тип API-ресурса.</typeparam>
-    /// <param name="builder">Builder endpoint.</param>
-    /// <param name="operation">Имя операции.</param>
-    /// <returns>Исходный builder endpoint.</returns>
+    /// <typeparam name="TResource">The t resource type.</typeparam>
+    /// <param name="builder">The service or endpoint builder.</param>
+    /// <param name="operation">The requested operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static IEndpointConventionBuilder RequirePermission<TResource>(
         this IEndpointConventionBuilder builder,
         string operation)
@@ -44,11 +42,11 @@ public static class PermissionEndpointConventionBuilderExtensions
     }
 
     /// <summary>
-    /// Требует явно указанное permission.
+    /// Adds an ASP.NET Core authorization requirement for the specified permission.
     /// </summary>
-    /// <param name="builder">Builder endpoint.</param>
-    /// <param name="permission">Требуемое permission.</param>
-    /// <returns>Исходный builder endpoint.</returns>
+    /// <param name="builder">The service or endpoint builder.</param>
+    /// <param name="permission">The permission value.</param>
+    /// <returns>The result of the operation.</returns>
     public static IEndpointConventionBuilder RequirePermission(
         this IEndpointConventionBuilder builder,
         string permission)

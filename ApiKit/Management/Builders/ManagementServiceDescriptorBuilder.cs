@@ -3,7 +3,7 @@ using ApiKit.Management.Models;
 namespace ApiKit.Management.Builders;
 
 /// <summary>
-/// Позволяет contributors совместно сформировать descriptor сервиса без прямой зависимости друг от друга.
+/// Builds the published service descriptor from discovery contributors.
 /// </summary>
 public sealed class ManagementServiceDescriptorBuilder
 {
@@ -25,24 +25,30 @@ public sealed class ManagementServiceDescriptorBuilder
     private readonly Dictionary<string, string> _metadata = new(StringComparer.OrdinalIgnoreCase);
 
     /// <summary>
-    /// Создаёт builder для указанного экземпляра сервиса.
+    /// Initializes a new ManagementServiceDescriptorBuilder instance.
     /// </summary>
     public ManagementServiceDescriptorBuilder(ManagementServiceIdentity identity)
     {
         Identity = identity ?? throw new ArgumentNullException(nameof(identity));
     }
 
-    /// <summary>Идентификация экземпляра.</summary>
+    /// <summary>
+    /// Gets identity.
+    /// </summary>
     public ManagementServiceIdentity Identity { get; }
 
-    /// <summary>Добавляет адрес текущего ASP.NET Core server.</summary>
+    /// <summary>
+    /// Registers address.
+    /// </summary>
     public void AddAddress(string address)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(address);
         _addresses.Add(address.Trim());
     }
 
-    /// <summary>Добавляет или заменяет management-транспорт.</summary>
+    /// <summary>
+    /// Registers transport.
+    /// </summary>
     public void AddTransport(ManagementTransportDescriptor transport)
     {
         ArgumentNullException.ThrowIfNull(transport);
@@ -53,7 +59,9 @@ public sealed class ManagementServiceDescriptorBuilder
         _transports[key] = transport;
     }
 
-    /// <summary>Добавляет или заменяет endpoint по имени.</summary>
+    /// <summary>
+    /// Registers endpoint.
+    /// </summary>
     public void AddEndpoint(ManagementEndpointDescriptor endpoint)
     {
         ArgumentNullException.ThrowIfNull(endpoint);
@@ -67,28 +75,36 @@ public sealed class ManagementServiceDescriptorBuilder
         _endpoints[key] = endpoint;
     }
 
-    /// <summary>Добавляет или заменяет CRUD-ресурс по техническому имени.</summary>
+    /// <summary>
+    /// Registers resource.
+    /// </summary>
     public void AddResource(ManagementResourceDescriptor resource)
     {
         ArgumentNullException.ThrowIfNull(resource);
         _resources[resource.Name] = resource;
     }
 
-    /// <summary>Добавляет или заменяет management-операцию по имени.</summary>
+    /// <summary>
+    /// Registers operation.
+    /// </summary>
     public void AddOperation(ManagementOperationDescriptor operation)
     {
         ArgumentNullException.ThrowIfNull(operation);
         _operations[operation.Name] = operation;
     }
 
-    /// <summary>Добавляет capability сервиса.</summary>
+    /// <summary>
+    /// Registers capability.
+    /// </summary>
     public void AddCapability(string capability)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(capability);
         _capabilities.Add(capability.Trim());
     }
 
-    /// <summary>Добавляет или заменяет произвольную metadata-пару.</summary>
+    /// <summary>
+    /// Sets metadata.
+    /// </summary>
     public void SetMetadata(string key, string value)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(key);
@@ -96,7 +112,9 @@ public sealed class ManagementServiceDescriptorBuilder
         _metadata[key.Trim()] = value;
     }
 
-    /// <summary>Создаёт неизменяемый снимок descriptor.</summary>
+    /// <summary>
+    /// Builds the final validated management service descriptor.
+    /// </summary>
     public ManagementServiceDescriptor Build() => new()
     {
         Identity = Identity,

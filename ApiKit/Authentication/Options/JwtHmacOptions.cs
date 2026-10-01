@@ -1,17 +1,17 @@
 namespace ApiKit.Authentication.Options;
 
 /// <summary>
-/// Содержит настройки HMAC-SHA256 ключа JWT.
+/// Defines configuration settings for JWT HMAC options.
 /// </summary>
 public sealed class JwtHmacOptions
 {
     /// <summary>
-    /// Имя секции конфигурации по умолчанию.
+    /// Gets or sets section name.
     /// </summary>
     public const string SectionName = "Jwt:Hmac";
 
     /// <summary>
-    /// Секретный ключ, используемый для подписи и проверки JWT-токенов.
+    /// Gets or sets key.
     /// </summary>
     public string Key { get; set; } = string.Empty;
 }

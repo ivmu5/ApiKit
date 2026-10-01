@@ -11,7 +11,7 @@ using Microsoft.Extensions.Options;
 namespace ApiKit.Management.Windows.Internal;
 
 /// <summary>
-/// Внутренний proxy management host к operation/resource pipe конкретного сервиса.
+/// Forwards authenticated management requests from the host to registered services.
 /// </summary>
 internal sealed class WindowsNamedPipeManagedServiceClient(
     IManagementServiceCatalog catalog,

@@ -6,9 +6,7 @@ using ApiKit.Management.Security;
 namespace ApiKit.Management.Windows.Internal;
 
 /// <summary>
-/// Преобразует уже проверенную transport/security identity в стандартный <see cref="ClaimsPrincipal"/>
-/// и выдаёт только права, соответствующие назначению конкретного Named Pipe.
-/// Более строгую policy можно подключить собственной реализацией <see cref="IManagementPeerAuthenticator"/>.
+/// Turns a cryptographically verified transport identity into an ASP.NET Core principal with purpose-scoped privileges.
 /// </summary>
 internal sealed class WindowsNamedPipePeerAuthenticator : IManagementPeerAuthenticator
 {
@@ -26,10 +24,6 @@ internal sealed class WindowsNamedPipePeerAuthenticator : IManagementPeerAuthent
             return ValueTask.FromResult<ClaimsPrincipal?>(null);
         }
 
-        // Начиная с protocol v4 registration pipe требует криптографически
-        // подтверждённую identity сервиса, v5 добавляет взаимную проверку Host↔Service,
-        // а v6 требует такую же проверку на административном pipe. ACL остаётся первым
-        // барьером, но сам по себе не выдаёт management-права.
         if (purpose == WindowsManagementTransportDefaults.RegistrationPurpose &&
             (peer.VerifiedIdentity is null ||
              peer.VerifiedIdentity.Kind != ManagementPeerKind.ManagedService ||

@@ -3,19 +3,27 @@ using ApiKit.Management.Security;
 namespace ApiKit.Management.Operations;
 
 /// <summary>
-/// Настройки произвольной management-операции.
+/// Defines configuration settings for management operation options.
 /// </summary>
 public sealed class ManagementOperationOptions
 {
-    /// <summary>Отображаемое имя операции.</summary>
+    /// <summary>
+    /// Gets or sets display name.
+    /// </summary>
     public string? DisplayName { get; set; }
 
-    /// <summary>Описание операции.</summary>
+    /// <summary>
+    /// Gets or sets description.
+    /// </summary>
     public string? Description { get; set; }
 
-    /// <summary>Группа операции в админ-панели.</summary>
+    /// <summary>
+    /// Gets or sets group name.
+    /// </summary>
     public string? GroupName { get; set; }
 
-    /// <summary>ASP.NET Core authorization policy, необходимая для вызова.</summary>
+    /// <summary>
+    /// Gets or sets authorization policy.
+    /// </summary>
     public string AuthorizationPolicy { get; set; } = ApiKitManagementAuthorizationDefaults.PolicyName;
 }

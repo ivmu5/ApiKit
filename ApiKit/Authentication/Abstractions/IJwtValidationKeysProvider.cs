@@ -3,13 +3,13 @@ using Microsoft.IdentityModel.Tokens;
 namespace ApiKit.Authentication.Abstractions;
 
 /// <summary>
-/// Предоставляет ключи, которыми разрешено проверять подпись входящих JWT-токенов.
+/// Defines the contract for i JWT validation keys provider.
 /// </summary>
 public interface IJwtValidationKeysProvider
 {
     /// <summary>
-    /// Возвращает набор ключей, доступных для проверки подписи JWT-токенов.
+    /// Returns validation keys.
     /// </summary>
-    /// <returns>Набор ключей проверки подписи.</returns>
+    /// <returns>The requested value.</returns>
     IReadOnlyCollection<SecurityKey> GetValidationKeys();
 }

@@ -1,6 +1,6 @@
 namespace ApiKit.Management.Models;
 
 /// <summary>
-/// Пустой результат для management-операций, не возвращающих данные.
+/// Represents a management operation that returns no result payload.
 /// </summary>
 public readonly record struct ManagementEmptyResult;

@@ -1,15 +1,15 @@
+using ApiKit.Management.CryptoKit.Models;
 using ApiKit.Management.Security;
 
 namespace ApiKit.Management.CryptoKit.Security;
 
 /// <summary>
-/// Управляет доверенными открытыми RSA-ключами management peer в хранилище CryptoKit.
+/// Defines the contract for i crypto kit management trust store.
 /// </summary>
 public interface ICryptoKitManagementTrustStore
 {
     /// <summary>
-    /// Добавляет trusted public key для указанной identity и credential.
-    /// Повторное добавление того же ключа идемпотентно; подмена ключа при том же credential id запрещена.
+    /// Adds or confirms a peer's trusted public key.
     /// </summary>
     ValueTask TrustAsync(
         ManagementPeerIdentity identity,
@@ -18,7 +18,16 @@ public interface ICryptoKitManagementTrustStore
         CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Удаляет trusted public key. Операция идемпотентна.
+    /// Marks retiring async.
+    /// </summary>
+    ValueTask MarkRetiringAsync(
+        ManagementPeerIdentity identity,
+        string credentialId,
+        DateTimeOffset acceptUntilUtc,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Revokes async.
     /// </summary>
     ValueTask RevokeAsync(
         ManagementPeerIdentity identity,
@@ -26,9 +35,9 @@ public interface ICryptoKitManagementTrustStore
         CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Пытается получить trusted public key в формате SubjectPublicKeyInfo.
+    /// Attempts to retrieve async.
     /// </summary>
-    ValueTask<byte[]?> TryGetPublicKeyAsync(
+    ValueTask<CryptoKitManagementTrustedCredential?> TryGetAsync(
         ManagementPeerIdentity identity,
         string credentialId,
         CancellationToken cancellationToken = default);

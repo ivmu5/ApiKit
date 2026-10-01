@@ -7,7 +7,6 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <AssemblyName>ApiKit.Management.CryptoKit</AssemblyName>
     <RootNamespace>ApiKit.Management.CryptoKit</RootNamespace>
-    <CryptoKitProjectPath Condition="'$(CryptoKitProjectPath)' == ''">../CryptoKit/CryptoKit.csproj</CryptoKitProjectPath>
   </PropertyGroup>
 
   <ItemGroup>
@@ -16,13 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="../ApiKit/ApiKit.csproj" />
-    <ProjectReference Include="$(CryptoKitProjectPath)" Condition="Exists('$(CryptoKitProjectPath)')" />
+    <ProjectReference Include="../external/CryptoKit/CryptoKit/CryptoKit.csproj" />
   </ItemGroup>
-
-  <Target Name="EnsureCryptoKitProjectReference"
-          BeforeTargets="ResolveReferences"
-          Condition="!Exists('$(CryptoKitProjectPath)')">
-    <Error Text="Проект CryptoKit не найден по пути '$(CryptoKitProjectPath)'. Разместите CryptoKit рядом с solution или задайте MSBuild-свойство CryptoKitProjectPath." />
-  </Target>
 
 </Project>

@@ -52,7 +52,6 @@ internal sealed class ManagementRegistrationHostedService(
             }
             catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
             {
-                // Остановка приложения уже отменена; lease самостоятельно истечёт в registry.
             }
             catch (Exception exception)
             {

@@ -9,7 +9,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 namespace ApiKit.Management.Builders;
 
 /// <summary>
-/// Builder регистрации management-возможностей сервиса.
+/// Configures additional management capabilities, publishers, and operations.
 /// </summary>
 public sealed class ApiKitManagementBuilder
 {
@@ -18,11 +18,13 @@ public sealed class ApiKitManagementBuilder
         Services = services;
     }
 
-    /// <summary>Коллекция сервисов приложения.</summary>
+    /// <summary>
+    /// Gets services.
+    /// </summary>
     public IServiceCollection Services { get; }
 
     /// <summary>
-    /// Добавляет статическую capability в descriptor сервиса.
+    /// Registers capability.
     /// </summary>
     public ApiKitManagementBuilder AddCapability(string capability)
     {
@@ -33,7 +35,7 @@ public sealed class ApiKitManagementBuilder
     }
 
     /// <summary>
-    /// Добавляет singleton-safe contributor, публикующий дополнительную metadata в descriptor сервиса.
+    /// Registers contributor.
     /// </summary>
     public ApiKitManagementBuilder AddContributor<TContributor>()
         where TContributor : class, IManagementDescriptorContributor
@@ -45,12 +47,8 @@ public sealed class ApiKitManagementBuilder
     }
 
     /// <summary>
-    /// Подключает in-process registry и publisher для тестов или однопроцессного management host.
+    /// Registers in process discovery.
     /// </summary>
-    /// <remarks>
-    /// Метод не обеспечивает межпроцессное обнаружение. Для реальных микросервисов
-    /// следует добавить publisher из transport-модуля Named Pipes или Unix Domain Sockets.
-    /// </remarks>
     public ApiKitManagementBuilder AddInProcessDiscovery()
     {
         ApiKit.Management.ManagementServiceCollectionExtensions.AddApiKitManagementRegistry(Services);
@@ -58,7 +56,7 @@ public sealed class ApiKitManagementBuilder
     }
 
     /// <summary>
-    /// Добавляет singleton publisher, который будет получать descriptor и heartbeat текущего сервиса.
+    /// Registers publisher.
     /// </summary>
     public ApiKitManagementBuilder AddPublisher<TPublisher>()
         where TPublisher : class, IManagementServicePublisher
@@ -70,13 +68,13 @@ public sealed class ApiKitManagementBuilder
     }
 
     /// <summary>
-    /// Регистрирует явно разрешённую management-операцию.
+    /// Registers operation.
     /// </summary>
-    /// <typeparam name="TOperation">Тип обработчика операции.</typeparam>
-    /// <typeparam name="TRequest">Тип входной модели.</typeparam>
-    /// <typeparam name="TResult">Тип результата.</typeparam>
-    /// <param name="name">Стабильное техническое имя операции.</param>
-    /// <param name="configure">Необязательная metadata-настройка операции.</param>
+    /// <typeparam name="TOperation">The t operation type.</typeparam>
+    /// <typeparam name="TRequest">The t request type.</typeparam>
+    /// <typeparam name="TResult">The t result type.</typeparam>
+    /// <param name="name">The resource or operation name.</param>
+    /// <param name="configure">An optional configuration callback.</param>
     public ApiKitManagementBuilder AddOperation<TOperation, TRequest, TResult>(
         string name,
         Action<ManagementOperationOptions>? configure = null)
@@ -120,7 +118,7 @@ public sealed class ApiKitManagementBuilder
     }
 
     /// <summary>
-    /// Регистрирует management-операцию без входных параметров и результата.
+    /// Registers operation.
     /// </summary>
     public ApiKitManagementBuilder AddOperation<TOperation>(
         string name,

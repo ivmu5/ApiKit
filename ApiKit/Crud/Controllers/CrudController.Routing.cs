@@ -17,10 +17,10 @@ public abstract partial class CrudController<
     where TUpdateModel : class
 {
     /// <summary>
-    /// Формирует route values для ответа 201 Created.
+    /// Returns created route values.
     /// </summary>
-    /// <param name="entity">Созданная entity.</param>
-    /// <returns>Значения маршрута к GET by id.</returns>
+    /// <param name="entity">The entity value.</param>
+    /// <returns>The requested value.</returns>
     protected virtual object GetCreatedRouteValues(TEntity entity) =>
         new RouteValueDictionary
         {

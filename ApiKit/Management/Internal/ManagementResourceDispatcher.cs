@@ -2,6 +2,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
 using ApiKit.Authorization.Permissions;
+using ApiKit.Management.Security;
 using ApiKit.Management.Abstractions;
 using ApiKit.Management.Models;
 using Microsoft.AspNetCore.Http;
@@ -32,6 +33,16 @@ internal sealed class ManagementResourceDispatcher(
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(resourceName);
         ArgumentNullException.ThrowIfNull(principal);
+
+        // Management CRUD is an authenticated transport feature, even if the target
+        // MVC action intentionally allows anonymous HTTP requests.
+        if (principal.Identity?.IsAuthenticated != true)
+        {
+            return BridgeFailure(
+                StatusCodes.Status401Unauthorized,
+                "unauthorized",
+                "Management CRUD requires an authenticated caller.");
+        }
 
         var resource = registry.Find(resourceName);
         if (resource is null)
@@ -196,7 +207,7 @@ internal sealed class ManagementResourceDispatcher(
         }
     }
 
-    private static ClaimsPrincipal CreateResourcePrincipal(
+    internal static ClaimsPrincipal CreateResourcePrincipal(
         ClaimsPrincipal principal,
         CrudManagementResourceDefinition resource,
         ManagementResourceOperation operation)
@@ -205,10 +216,15 @@ internal sealed class ManagementResourceDispatcher(
             .Select(static identity => new ClaimsIdentity(identity))
             .ToList();
 
-        // Стандартные ApiKit CRUD permissions продолжают проверяться обычным ASP.NET
-        // authorization engine. Management bridge добавляет только permission конкретной
-        // операции, а пользовательские policies/roles разработчика не обходятся.
-        if (resource.Descriptor.Permissions.TryGetValue(operation, out var permission)
+        // Only a verified administrative principal may receive the synthetic CRUD
+        // permission for this particular management operation. Ordinary principals
+        // must supply their own application permission; other MVC policies and roles
+        // remain enforced by ASP.NET Core's authorization pipeline.
+        if (principal.Identity?.IsAuthenticated == true
+            && principal.HasClaim(
+                ApiKitManagementAuthorizationDefaults.ClaimType,
+                ApiKitManagementAuthorizationDefaults.AdministratorClaimValue)
+            && resource.Descriptor.Permissions.TryGetValue(operation, out var permission)
             && !principal.HasClaim(PermissionAuthorizationDefaults.ClaimType, permission))
         {
             identities.Add(new ClaimsIdentity(

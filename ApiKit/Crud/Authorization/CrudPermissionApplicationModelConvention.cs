@@ -32,9 +32,6 @@ internal sealed class CrudPermissionApplicationModelConvention : IApplicationMod
 
     private static void ApplyPermission(ActionModel action, Type entityType)
     {
-        // Явная конфигурация авторизации в переопределённом методе имеет приоритет
-        // над соглашением CRUD. Это позволяет заменить автоматическое разрешение
-        // обычным [Authorize], [RequirePermission<...>] или [AllowAnonymous].
         var declaredAuthorization = action.ActionMethod
             .GetCustomAttributes(inherit: false)
             .Any(attribute => attribute is IAuthorizeData or IAllowAnonymous);
@@ -57,8 +54,6 @@ internal sealed class CrudPermissionApplicationModelConvention : IApplicationMod
             entityType,
             ToPermissionOperation(crudOperation.Operation));
 
-        // Встроенный AuthorizeFilter передаёт проверку стандартной
-        // системе авторизации ASP.NET Core.
         action.Filters.Add(new AuthorizeFilter(policyName));
     }
 

@@ -1,4 +1,13 @@
 <Solution>
+  <Folder Name="/External/">
+    <Project Path="external/CryptoKit/CryptoKit/CryptoKit.csproj" />
+  </Folder>
+  <Folder Name="/Tests/">
+    <Project Path="ApiKit.Tests/ApiKit.Tests.csproj" />
+    <Project Path="ApiKit.Management.CryptoKit.Tests/ApiKit.Management.CryptoKit.Tests.csproj" />
+    <Project Path="ApiKit.Management.Windows.Tests/ApiKit.Management.Windows.Tests.csproj" />
+    <Project Path="ApiKit.Management.Windows.TestWorker/ApiKit.Management.Windows.TestWorker.csproj" />
+  </Folder>
   <Project Path="ApiKit.Management.CryptoKit/ApiKit.Management.CryptoKit.csproj" />
   <Project Path="ApiKit.Management.Windows/ApiKit.Management.Windows.csproj" />
   <Project Path="ApiKit/ApiKit.csproj" />

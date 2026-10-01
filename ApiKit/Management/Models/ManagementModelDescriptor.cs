@@ -1,13 +1,17 @@
 namespace ApiKit.Management.Models;
 
 /// <summary>
-/// Описывает публичную JSON-модель CRUD-ресурса для динамического management UI.
+/// Describes the shape of a model exposed by a management resource.
 /// </summary>
 public sealed record ManagementModelDescriptor
 {
-    /// <summary>Полное CLR-имя модели.</summary>
+    /// <summary>
+    /// Gets or sets type name.
+    /// </summary>
     public required string TypeName { get; init; }
 
-    /// <summary>Сериализуемые свойства верхнего уровня.</summary>
+    /// <summary>
+    /// Gets or sets properties.
+    /// </summary>
     public required IReadOnlyList<ManagementPropertyDescriptor> Properties { get; init; }
 }

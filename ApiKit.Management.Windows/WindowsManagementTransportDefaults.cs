@@ -1,17 +1,27 @@
 namespace ApiKit.Management.Windows;
 
-/// <summary>Константы Windows management транспорта.</summary>
+/// <summary>
+/// Defines standard values for windows management transport defaults.
+/// </summary>
 public static class WindowsManagementTransportDefaults
 {
-    /// <summary>Стабильное имя транспорта в management descriptor.</summary>
+    /// <summary>
+    /// Gets or sets transport name.
+    /// </summary>
     public const string TransportName = "named-pipe";
 
-    /// <summary>Назначение pipe регистрации и heartbeat управляемых сервисов.</summary>
+    /// <summary>
+    /// Gets or sets registration purpose.
+    /// </summary>
     public const string RegistrationPurpose = "registration";
 
-    /// <summary>Назначение административного pipe management host.</summary>
+    /// <summary>
+    /// Gets or sets administration purpose.
+    /// </summary>
     public const string AdministrationPurpose = "administration";
 
-    /// <summary>Назначение pipe, принимающего management operations и CRUD-resource запросы.</summary>
+    /// <summary>
+    /// Gets or sets management purpose.
+    /// </summary>
     public const string ManagementPurpose = "management";
 }

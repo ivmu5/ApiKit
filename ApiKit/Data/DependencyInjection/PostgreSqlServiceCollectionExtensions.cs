@@ -6,41 +6,27 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Infrastructure;
 namespace ApiKit.Data;
 
 /// <summary>
-/// Содержит методы регистрации EF Core <see cref="DbContext"/> для PostgreSQL через Npgsql.
+/// Defines extension methods for postgre SQL service collection extensions.
 /// </summary>
 public static class PostgreSqlServiceCollectionExtensions
 {
     /// <summary>
-    /// Имя строки подключения, используемое по умолчанию.
+    /// Gets or sets default connection string name.
     /// </summary>
     public const string DefaultConnectionStringName = "DefaultConnection";
 
     /// <summary>
-    /// Регистрирует <typeparamref name="TContext"/> через стандартный EF Core
-    /// <c>AddDbContext</c> и настраивает провайдер PostgreSQL через Npgsql.
+    /// Registers API kit postgre SQL db context.
     /// </summary>
-    /// <typeparam name="TContext">Тип регистрируемого контекста EF Core.</typeparam>
-    /// <param name="services">Коллекция сервисов приложения.</param>
-    /// <param name="configuration">Конфигурация приложения.</param>
-    /// <param name="connectionStringName">
-    /// Имя строки подключения в секции <c>ConnectionStrings</c>.
-    /// </param>
-    /// <param name="configureDbContext">
-    /// Дополнительная настройка стандартного <see cref="DbContextOptionsBuilder"/>.
-    /// Делегат вызывается после <c>UseNpgsql</c> и может изменять или дополнять настройки EF Core.
-    /// </param>
-    /// <param name="configureNpgsql">
-    /// Дополнительная настройка стандартного <see cref="NpgsqlDbContextOptionsBuilder"/>.
-    /// </param>
-    /// <param name="contextLifetime">Время жизни экземпляра <typeparamref name="TContext"/> в DI.</param>
-    /// <param name="optionsLifetime">Время жизни <see cref="DbContextOptions"/> в DI.</param>
-    /// <returns>Исходная коллекция сервисов.</returns>
-    /// <remarks>
-    /// Метод не вводит собственный DbContext, repository или unit of work.
-    /// После регистрации приложение продолжает работать напрямую со стандартными API EF Core и Npgsql.
-    /// Если требуется полностью нестандартная регистрация контекста, разработчик может использовать
-    /// штатный <c>AddDbContext</c>, <c>AddDbContextPool</c> или <c>AddDbContextFactory</c> напрямую.
-    /// </remarks>
+    /// <typeparam name="TContext">The t context type.</typeparam>
+    /// <param name="services">The dependency injection service collection.</param>
+    /// <param name="configuration">The application configuration.</param>
+    /// <param name="connectionStringName">The connection string name value.</param>
+    /// <param name="configureDbContext">The configure db context value.</param>
+    /// <param name="configureNpgsql">The configure npgsql value.</param>
+    /// <param name="contextLifetime">The context lifetime value.</param>
+    /// <param name="optionsLifetime">The options lifetime value.</param>
+    /// <returns>The builder or service collection for further configuration.</returns>
     public static IServiceCollection AddApiKitPostgreSqlDbContext<TContext>(
         this IServiceCollection services,
         IConfiguration configuration,
@@ -73,22 +59,16 @@ public static class PostgreSqlServiceCollectionExtensions
     }
 
     /// <summary>
-    /// Регистрирует <typeparamref name="TContext"/> через стандартный EF Core
-    /// <c>AddDbContext</c>, используя переданную строку подключения PostgreSQL.
+    /// Registers API kit postgre SQL db context.
     /// </summary>
-    /// <typeparam name="TContext">Тип регистрируемого контекста EF Core.</typeparam>
-    /// <param name="services">Коллекция сервисов приложения.</param>
-    /// <param name="connectionString">Строка подключения PostgreSQL.</param>
-    /// <param name="configureDbContext">
-    /// Дополнительная настройка стандартного <see cref="DbContextOptionsBuilder"/>.
-    /// Делегат вызывается после <c>UseNpgsql</c> и может изменять или дополнять настройки EF Core.
-    /// </param>
-    /// <param name="configureNpgsql">
-    /// Дополнительная настройка стандартного <see cref="NpgsqlDbContextOptionsBuilder"/>.
-    /// </param>
-    /// <param name="contextLifetime">Время жизни экземпляра <typeparamref name="TContext"/> в DI.</param>
-    /// <param name="optionsLifetime">Время жизни <see cref="DbContextOptions"/> в DI.</param>
-    /// <returns>Исходная коллекция сервисов.</returns>
+    /// <typeparam name="TContext">The t context type.</typeparam>
+    /// <param name="services">The dependency injection service collection.</param>
+    /// <param name="connectionString">The connection string value.</param>
+    /// <param name="configureDbContext">The configure db context value.</param>
+    /// <param name="configureNpgsql">The configure npgsql value.</param>
+    /// <param name="contextLifetime">The context lifetime value.</param>
+    /// <param name="optionsLifetime">The options lifetime value.</param>
+    /// <returns>The builder or service collection for further configuration.</returns>
     public static IServiceCollection AddApiKitPostgreSqlDbContext<TContext>(
         this IServiceCollection services,
         string connectionString,
@@ -109,8 +89,6 @@ public static class PostgreSqlServiceCollectionExtensions
                     connectionString,
                     npgsqlOptions => configureNpgsql?.Invoke(serviceProvider, npgsqlOptions));
 
-                // Пользовательская настройка вызывается последней, чтобы разработчик
-                // мог изменить любую настройку по умолчанию, применённую ApiKit.
                 configureDbContext?.Invoke(serviceProvider, options);
             },
             contextLifetime,

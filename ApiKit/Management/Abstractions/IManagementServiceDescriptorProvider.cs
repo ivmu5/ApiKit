@@ -3,15 +3,15 @@ using ApiKit.Management.Models;
 namespace ApiKit.Management.Abstractions;
 
 /// <summary>
-/// Формирует актуальный descriptor management-возможностей текущего сервиса.
+/// Defines the contract for i management service descriptor provider.
 /// </summary>
 public interface IManagementServiceDescriptorProvider
 {
     /// <summary>
-    /// Формирует descriptor текущего экземпляра сервиса.
+    /// Returns descriptor async.
     /// </summary>
-    /// <param name="cancellationToken">Токен отмены.</param>
-    /// <returns>Актуальный descriptor.</returns>
+    /// <param name="cancellationToken">A token that cancels this operation.</param>
+    /// <returns>The requested value.</returns>
     ValueTask<ManagementServiceDescriptor> GetDescriptorAsync(
         CancellationToken cancellationToken = default);
 }

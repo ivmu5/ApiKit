@@ -1,29 +1,43 @@
 namespace ApiKit.Management.Lifecycle;
 
 /// <summary>
-/// Платформенно-независимое описание пакета устанавливаемого сервиса.
+/// Describes a package to install, including its entry point, version, dependencies, and metadata.
 /// </summary>
 public sealed record ManagedServicePackageManifest
 {
-    /// <summary>Стабильное имя сервиса.</summary>
+    /// <summary>
+    /// Gets or sets service name.
+    /// </summary>
     public required string ServiceName { get; init; }
 
-    /// <summary>Отображаемое имя.</summary>
+    /// <summary>
+    /// Gets or sets display name.
+    /// </summary>
     public required string DisplayName { get; init; }
 
-    /// <summary>Версия пакета.</summary>
+    /// <summary>
+    /// Gets or sets version.
+    /// </summary>
     public required string Version { get; init; }
 
-    /// <summary>Относительный путь к запускаемому файлу внутри пакета.</summary>
+    /// <summary>
+    /// Gets or sets entry point.
+    /// </summary>
     public required string EntryPoint { get; init; }
 
-    /// <summary>Аргументы запуска.</summary>
+    /// <summary>
+    /// Gets or sets arguments.
+    /// </summary>
     public IReadOnlyList<string> Arguments { get; init; } = [];
 
-    /// <summary>Имена сервисов, необходимых до запуска этого сервиса.</summary>
+    /// <summary>
+    /// Gets or sets dependencies.
+    /// </summary>
     public IReadOnlyList<string> Dependencies { get; init; } = [];
 
-    /// <summary>Дополнительные метаданные установщика.</summary>
+    /// <summary>
+    /// Gets or sets metadata.
+    /// </summary>
     public IReadOnlyDictionary<string, string> Metadata { get; init; }
         = new Dictionary<string, string>();
 }

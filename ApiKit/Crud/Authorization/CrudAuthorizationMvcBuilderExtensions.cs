@@ -4,21 +4,15 @@ using Microsoft.Extensions.DependencyInjection;
 namespace ApiKit.Crud.Authorization;
 
 /// <summary>
-/// Содержит интеграцию generic CRUD с permission-based authorization ApiKit.
+/// Defines extension methods for CRUD authorization MVC builder extensions.
 /// </summary>
 public static class CrudAuthorizationMvcBuilderExtensions
 {
     /// <summary>
-    /// Автоматически связывает стандартные CRUD actions с permissions ресурса:
-    /// GET — read, POST — create, PUT/PATCH — update, DELETE — delete.
+    /// Registers API kit CRUD permissions.
     /// </summary>
-    /// <remarks>
-    /// Метод является опциональной интеграцией. Сам generic CRUD не требует
-    /// permission-based authorization. До вызова этого метода необходимо зарегистрировать
-    /// authorization через <c>AddApiKitAuthorization</c>.
-    /// </remarks>
-    /// <param name="mvcBuilder">Стандартный MVC builder ASP.NET Core.</param>
-    /// <returns>Исходный MVC builder.</returns>
+    /// <param name="mvcBuilder">The ASP.NET Core MVC builder.</param>
+    /// <returns>The builder or service collection for further configuration.</returns>
     public static IMvcBuilder AddApiKitCrudPermissions(this IMvcBuilder mvcBuilder)
     {
         ArgumentNullException.ThrowIfNull(mvcBuilder);

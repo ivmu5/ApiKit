@@ -3,19 +3,27 @@ using System.Text.Json;
 namespace ApiKit.Management.Models;
 
 /// <summary>
-/// Результат выполнения management-операции через универсальный dispatcher.
+/// Defines a result of management operation execution result.
 /// </summary>
 public sealed record ManagementOperationExecutionResult
 {
-    /// <summary>Признак успешного выполнения.</summary>
+    /// <summary>
+    /// Gets or sets whether succeeded is enabled.
+    /// </summary>
     public required bool Succeeded { get; init; }
 
-    /// <summary>Сериализованный результат успешной операции.</summary>
+    /// <summary>
+    /// Gets or sets value.
+    /// </summary>
     public JsonElement? Value { get; init; }
 
-    /// <summary>Машиночитаемый код ошибки.</summary>
+    /// <summary>
+    /// Gets or sets error code.
+    /// </summary>
     public string? ErrorCode { get; init; }
 
-    /// <summary>Безопасное для передачи клиенту описание ошибки.</summary>
+    /// <summary>
+    /// Gets or sets error message.
+    /// </summary>
     public string? ErrorMessage { get; init; }
 }

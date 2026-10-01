@@ -1,0 +1,1250 @@
+{
+  "formatVersion": 1,
+  "createdAt": "2026-09-30T10:07:06Z",
+  "profile": "Source only",
+  "files": [
+    {
+      "path": ".gitattributes",
+      "size": 2581
+    },
+    {
+      "path": ".gitignore",
+      "size": 6585
+    },
+    {
+      "path": ".gitmodules",
+      "size": 106
+    },
+    {
+      "path": "ApiKit.Management.CryptoKit.Tests/ApiKit.Management.CryptoKit.Tests.csproj",
+      "size": 789
+    },
+    {
+      "path": "ApiKit.Management.CryptoKit.Tests/README.md",
+      "size": 3093
+    },
+    {
+      "path": "ApiKit.Management.CryptoKit.Tests/README.ru.md",
+      "size": 4387
+    },
+    {
+      "path": "ApiKit.Management.CryptoKit.Tests/Security/CredentialRotationTests.cs",
+      "size": 6739
+    },
+    {
+      "path": "ApiKit.Management.CryptoKit.Tests/Security/CryptoProofTests.cs",
+      "size": 6092
+    },
+    {
+      "path": "ApiKit.Management.CryptoKit.Tests/Security/ProvisioningTests.cs",
+      "size": 5241
+    },
+    {
+      "path": "ApiKit.Management.CryptoKit.Tests/Support/CryptoFixture.cs",
+      "size": 3668
+    },
+    {
+      "path": "ApiKit.Management.CryptoKit.Tests/Support/InMemoryKeyStorage.cs",
+      "size": 1754
+    },
+    {
+      "path": "ApiKit.Management.CryptoKit/ApiKit.Management.CryptoKit.csproj",
+      "size": 692
+    },
+    {
+      "path": "ApiKit.Management.CryptoKit/DependencyInjection/CryptoKitManagementServiceCollectionExtensions.cs",
+      "size": 5312
+    },
+    {
+      "path": "ApiKit.Management.CryptoKit/Internal/CryptoKitManagedServiceCredentialProvisioner.cs",
+      "size": 16683
+    },
+    {
+      "path": "ApiKit.Management.CryptoKit/Internal/CryptoKitManagedServiceProvisioningOptionsSnapshot.cs",
+      "size": 1066
+    },
+    {
+      "path": "ApiKit.Management.CryptoKit/Internal/CryptoKitManagementCredentialProvider.cs",
+      "size": 7317
+    },
+    {
+      "path": "ApiKit.Management.CryptoKit/Internal/CryptoKitManagementCredentialRegistry.cs",
+      "size": 21279
+    },
+    {
+      "path": "ApiKit.Management.CryptoKit/Internal/CryptoKitManagementOptionsSnapshot.cs",
+      "size": 4478
+    },
+    {
+      "path": "ApiKit.Management.CryptoKit/Internal/CryptoKitManagementPeerVerifier.cs",
+      "size": 6898
+    },
+    {
+      "path": "ApiKit.Management.CryptoKit/Internal/CryptoKitManagementRsaProof.cs",
+      "size": 3242
+    },
+    {
+      "path": "ApiKit.Management.CryptoKit/Internal/CryptoKitManagementTrustKeyId.cs",
+      "size": 2095
+    },
+    {
+      "path": "ApiKit.Management.CryptoKit/Internal/CryptoKitManagementTrustStore.cs",
+      "size": 10181
+    },
+    {
+      "path": "ApiKit.Management.CryptoKit/Models/CryptoKitManagementCredentialInfo.cs",
+      "size": 711
+    },
+    {
+      "path": "ApiKit.Management.CryptoKit/Models/CryptoKitManagementLocalCredentialStatus.cs",
+      "size": 526
+    },
+    {
+      "path": "ApiKit.Management.CryptoKit/Models/CryptoKitManagementPublicCredential.cs",
+      "size": 694
+    },
+    {
+      "path": "ApiKit.Management.CryptoKit/Models/CryptoKitManagementTrustedCredential.cs",
+      "size": 901
+    },
+    {
+      "path": "ApiKit.Management.CryptoKit/Models/CryptoKitManagementTrustedCredentialStatus.cs",
+      "size": 427
+    },
+    {
+      "path": "ApiKit.Management.CryptoKit/Options/CryptoKitManagedServiceProvisioningOptions.cs",
+      "size": 523
+    },
+    {
+      "path": "ApiKit.Management.CryptoKit/Options/CryptoKitManagementCredentialRegistration.cs",
+      "size": 1023
+    },
+    {
+      "path": "ApiKit.Management.CryptoKit/Options/CryptoKitManagementSecurityOptions.cs",
+      "size": 1735
+    },
+    {
+      "path": "ApiKit.Management.CryptoKit/Properties.AssemblyInfo.cs",
+      "size": 108
+    },
+    {
+      "path": "ApiKit.Management.CryptoKit/Provisioning/CryptoKitManagementProvisioningPaths.cs",
+      "size": 6724
+    },
+    {
+      "path": "ApiKit.Management.CryptoKit/README.md",
+      "size": 8337
+    },
+    {
+      "path": "ApiKit.Management.CryptoKit/README.ru.md",
+      "size": 12238
+    },
+    {
+      "path": "ApiKit.Management.CryptoKit/Security/CryptoKitManagementTrustStoreExtensions.cs",
+      "size": 2032
+    },
+    {
+      "path": "ApiKit.Management.CryptoKit/Security/ICryptoKitManagementCredentialRotationManager.cs",
+      "size": 1441
+    },
+    {
+      "path": "ApiKit.Management.CryptoKit/Security/ICryptoKitManagementPublicCredentialProvider.cs",
+      "size": 1022
+    },
+    {
+      "path": "ApiKit.Management.CryptoKit/Security/ICryptoKitManagementTrustStore.cs",
+      "size": 1322
+    },
+    {
+      "path": "ApiKit.Management.Windows.PrivilegedTests/ApiKit.Management.Windows.PrivilegedTests.csproj",
+      "size": 842
+    },
+    {
+      "path": "ApiKit.Management.Windows.PrivilegedTests/README.md",
+      "size": 3539
+    },
+    {
+      "path": "ApiKit.Management.Windows.PrivilegedTests/README.ru.md",
+      "size": 5138
+    },
+    {
+      "path": "ApiKit.Management.Windows.PrivilegedTests/WindowsAdminFactAttribute.cs",
+      "size": 1110
+    },
+    {
+      "path": "ApiKit.Management.Windows.PrivilegedTests/WindowsScmInstallerTests.cs",
+      "size": 8365
+    },
+    {
+      "path": "ApiKit.Management.Windows.TestWorker/ApiKit.Management.Windows.TestWorker.csproj",
+      "size": 785
+    },
+    {
+      "path": "ApiKit.Management.Windows.TestWorker/Program.cs",
+      "size": 7150
+    },
+    {
+      "path": "ApiKit.Management.Windows.TestWorker/README.md",
+      "size": 4217
+    },
+    {
+      "path": "ApiKit.Management.Windows.TestWorker/README.ru.md",
+      "size": 6013
+    },
+    {
+      "path": "ApiKit.Management.Windows.Tests/ApiKit.Management.Windows.Tests.csproj",
+      "size": 1013
+    },
+    {
+      "path": "ApiKit.Management.Windows.Tests/Installer/IsolationRegistryTests.cs",
+      "size": 4475
+    },
+    {
+      "path": "ApiKit.Management.Windows.Tests/Installer/PackageStorageTests.cs",
+      "size": 8184
+    },
+    {
+      "path": "ApiKit.Management.Windows.Tests/README.md",
+      "size": 4467
+    },
+    {
+      "path": "ApiKit.Management.Windows.Tests/README.ru.md",
+      "size": 6424
+    },
+    {
+      "path": "ApiKit.Management.Windows.Tests/Security/DelegationSecurityTests.cs",
+      "size": 1764
+    },
+    {
+      "path": "ApiKit.Management.Windows.Tests/Security/ManagementAuthorizationTests.cs",
+      "size": 4718
+    },
+    {
+      "path": "ApiKit.Management.Windows.Tests/Security/MultiProcessManagementTests.cs",
+      "size": 11984
+    },
+    {
+      "path": "ApiKit.Management.Windows.Tests/Security/NamedPipeHandshakeTests.cs",
+      "size": 11714
+    },
+    {
+      "path": "ApiKit.Management.Windows.Tests/Support/InMemoryKeyStorage.cs",
+      "size": 1752
+    },
+    {
+      "path": "ApiKit.Management.Windows.Tests/Support/WindowsFactAttribute.cs",
+      "size": 366
+    },
+    {
+      "path": "ApiKit.Management.Windows.Tests/Support/WindowsPeerFixture.cs",
+      "size": 2026
+    },
+    {
+      "path": "ApiKit.Management.Windows/ApiKit.Management.Windows.csproj",
+      "size": 887
+    },
+    {
+      "path": "ApiKit.Management.Windows/DependencyInjection/WindowsManagementServiceCollectionExtensions.cs",
+      "size": 11333
+    },
+    {
+      "path": "ApiKit.Management.Windows/Internal/WindowsIsolationIdentity.cs",
+      "size": 949
+    },
+    {
+      "path": "ApiKit.Management.Windows/Internal/WindowsManagedServiceInstaller.cs",
+      "size": 23556
+    },
+    {
+      "path": "ApiKit.Management.Windows/Internal/WindowsManagedServiceIsolation.cs",
+      "size": 13510
+    },
+    {
+      "path": "ApiKit.Management.Windows/Internal/WindowsManagedServiceIsolationRegistry.cs",
+      "size": 2635
+    },
+    {
+      "path": "ApiKit.Management.Windows/Internal/WindowsManagedServiceIsolationState.cs",
+      "size": 6262
+    },
+    {
+      "path": "ApiKit.Management.Windows/Internal/WindowsManagedServiceLifecycleController.cs",
+      "size": 4781
+    },
+    {
+      "path": "ApiKit.Management.Windows/Internal/WindowsNamedPipeAuthentication.cs",
+      "size": 2777
+    },
+    {
+      "path": "ApiKit.Management.Windows/Internal/WindowsNamedPipeChallengeResponseProtocol.cs",
+      "size": 14310
+    },
+    {
+      "path": "ApiKit.Management.Windows/Internal/WindowsNamedPipeClientConnection.cs",
+      "size": 1114
+    },
+    {
+      "path": "ApiKit.Management.Windows/Internal/WindowsNamedPipeManagedServiceClient.cs",
+      "size": 9834
+    },
+    {
+      "path": "ApiKit.Management.Windows/Internal/WindowsNamedPipeManagementClient.Catalog.cs",
+      "size": 2424
+    },
+    {
+      "path": "ApiKit.Management.Windows/Internal/WindowsNamedPipeManagementClient.Lifecycle.cs",
+      "size": 3094
+    },
+    {
+      "path": "ApiKit.Management.Windows/Internal/WindowsNamedPipeManagementClient.Resources.cs",
+      "size": 6515
+    },
+    {
+      "path": "ApiKit.Management.Windows/Internal/WindowsNamedPipeManagementClient.Transport.cs",
+      "size": 4309
+    },
+    {
+      "path": "ApiKit.Management.Windows/Internal/WindowsNamedPipeManagementClient.cs",
+      "size": 1343
+    },
+    {
+      "path": "ApiKit.Management.Windows/Internal/WindowsNamedPipeManagementHostServer.cs",
+      "size": 25898
+    },
+    {
+      "path": "ApiKit.Management.Windows/Internal/WindowsNamedPipeManagementServicePublisher.cs",
+      "size": 4535
+    },
+    {
+      "path": "ApiKit.Management.Windows/Internal/WindowsNamedPipeMessageSerializer.cs",
+      "size": 2329
+    },
+    {
+      "path": "ApiKit.Management.Windows/Internal/WindowsNamedPipeNames.cs",
+      "size": 858
+    },
+    {
+      "path": "ApiKit.Management.Windows/Internal/WindowsNamedPipePeerAuthenticator.cs",
+      "size": 4224
+    },
+    {
+      "path": "ApiKit.Management.Windows/Internal/WindowsNamedPipeProtocol.cs",
+      "size": 4395
+    },
+    {
+      "path": "ApiKit.Management.Windows/Internal/WindowsNamedPipeSecurityFactory.cs",
+      "size": 2652
+    },
+    {
+      "path": "ApiKit.Management.Windows/Internal/WindowsNamedPipeServiceServer.cs",
+      "size": 12561
+    },
+    {
+      "path": "ApiKit.Management.Windows/Internal/WindowsNamedPipeTransportDescriptorContributor.cs",
+      "size": 1171
+    },
+    {
+      "path": "ApiKit.Management.Windows/Internal/WindowsServiceControlCommands.cs",
+      "size": 5821
+    },
+    {
+      "path": "ApiKit.Management.Windows/Internal/WindowsServicePackageStorage.cs",
+      "size": 18099
+    },
+    {
+      "path": "ApiKit.Management.Windows/Options/WindowsManagementClientOptions.cs",
+      "size": 973
+    },
+    {
+      "path": "ApiKit.Management.Windows/Options/WindowsManagementHostOptions.cs",
+      "size": 1747
+    },
+    {
+      "path": "ApiKit.Management.Windows/Options/WindowsManagementServiceOptions.cs",
+      "size": 1333
+    },
+    {
+      "path": "ApiKit.Management.Windows/Options/WindowsNamedPipeAccessOptions.cs",
+      "size": 1991
+    },
+    {
+      "path": "ApiKit.Management.Windows/Options/WindowsServiceManagementOptions.cs",
+      "size": 2359
+    },
+    {
+      "path": "ApiKit.Management.Windows/Properties.AssemblyInfo.cs",
+      "size": 253
+    },
+    {
+      "path": "ApiKit.Management.Windows/README.md",
+      "size": 8546
+    },
+    {
+      "path": "ApiKit.Management.Windows/README.ru.md",
+      "size": 12145
+    },
+    {
+      "path": "ApiKit.Management.Windows/WindowsManagementTransportDefaults.cs",
+      "size": 754
+    },
+    {
+      "path": "ApiKit.Tests/ApiKit.Tests.csproj",
+      "size": 688
+    },
+    {
+      "path": "ApiKit.Tests/README.md",
+      "size": 3128
+    },
+    {
+      "path": "ApiKit.Tests/README.ru.md",
+      "size": 4517
+    },
+    {
+      "path": "ApiKit.Tests/Security/AuthorizationPolicyTests.cs",
+      "size": 4083
+    },
+    {
+      "path": "ApiKit.Tests/Security/CanonicalProofPayloadTests.cs",
+      "size": 5162
+    },
+    {
+      "path": "ApiKit.Tests/Security/ChallengeProviderTests.cs",
+      "size": 5972
+    },
+    {
+      "path": "ApiKit.Tests/Security/ManagementBridgePrincipalTests.cs",
+      "size": 3400
+    },
+    {
+      "path": "ApiKit.Tests/Support/ManualTimeProvider.cs",
+      "size": 476
+    },
+    {
+      "path": "ApiKit.slnx",
+      "size": 729
+    },
+    {
+      "path": "ApiKit/ApiKit.csproj",
+      "size": 848
+    },
+    {
+      "path": "ApiKit/Authentication/Abstractions/IJwtSigningCredentialsProvider.cs",
+      "size": 402
+    },
+    {
+      "path": "ApiKit/Authentication/Abstractions/IJwtTokenGenerator.cs",
+      "size": 470
+    },
+    {
+      "path": "ApiKit/Authentication/Abstractions/IJwtValidationKeysProvider.cs",
+      "size": 400
+    },
+    {
+      "path": "ApiKit/Authentication/DependencyInjection/JwtHmacServiceCollectionExtensions.cs",
+      "size": 2067
+    },
+    {
+      "path": "ApiKit/Authentication/DependencyInjection/JwtServiceCollectionExtensions.cs",
+      "size": 5296
+    },
+    {
+      "path": "ApiKit/Authentication/Internal/JwtTokenValidationParametersFactory.cs",
+      "size": 1382
+    },
+    {
+      "path": "ApiKit/Authentication/Models/JwtTokenRequest.cs",
+      "size": 1077
+    },
+    {
+      "path": "ApiKit/Authentication/Models/JwtTokenResult.cs",
+      "size": 497
+    },
+    {
+      "path": "ApiKit/Authentication/Options/JwtBearerValidationOptions.cs",
+      "size": 877
+    },
+    {
+      "path": "ApiKit/Authentication/Options/JwtHmacOptions.cs",
+      "size": 405
+    },
+    {
+      "path": "ApiKit/Authentication/Options/JwtTokenGenerationOptions.cs",
+      "size": 721
+    },
+    {
+      "path": "ApiKit/Authentication/Providers/HmacJwtKeyProvider.cs",
+      "size": 1419
+    },
+    {
+      "path": "ApiKit/Authentication/Services/JwtTokenGenerator.cs",
+      "size": 4871
+    },
+    {
+      "path": "ApiKit/Authorization/Attributes/RequirePermissionAttribute.cs",
+      "size": 1727
+    },
+    {
+      "path": "ApiKit/Authorization/DependencyInjection/AuthorizationServiceCollectionExtensions.cs",
+      "size": 1821
+    },
+    {
+      "path": "ApiKit/Authorization/Options/ApiKitAuthorizationOptions.cs",
+      "size": 2836
+    },
+    {
+      "path": "ApiKit/Authorization/Permissions/AuthorizationPolicyBuilderExtensions.cs",
+      "size": 1193
+    },
+    {
+      "path": "ApiKit/Authorization/Permissions/IPermissionNameResolver.cs",
+      "size": 1104
+    },
+    {
+      "path": "ApiKit/Authorization/Permissions/PermissionAuthorizationDefaults.cs",
+      "size": 317
+    },
+    {
+      "path": "ApiKit/Authorization/Permissions/PermissionEndpointConventionBuilderExtensions.cs",
+      "size": 2344
+    },
+    {
+      "path": "ApiKit/Authorization/Permissions/PermissionNameResolver.cs",
+      "size": 1485
+    },
+    {
+      "path": "ApiKit/Authorization/Permissions/PermissionOperation.cs",
+      "size": 599
+    },
+    {
+      "path": "ApiKit/Authorization/Permissions/PermissionPolicyName.cs",
+      "size": 3815
+    },
+    {
+      "path": "ApiKit/Authorization/Providers/PermissionAuthorizationPolicyProvider.cs",
+      "size": 2419
+    },
+    {
+      "path": "ApiKit/Crud/Attributes/CrudOperationAttribute.cs",
+      "size": 460
+    },
+    {
+      "path": "ApiKit/Crud/Authorization/CrudAuthorizationMvcBuilderExtensions.cs",
+      "size": 1043
+    },
+    {
+      "path": "ApiKit/Crud/Authorization/CrudPermissionApplicationModelConvention.cs",
+      "size": 2649
+    },
+    {
+      "path": "ApiKit/Crud/Controllers/CrudController.Actions.cs",
+      "size": 8047
+    },
+    {
+      "path": "ApiKit/Crud/Controllers/CrudController.Entity.cs",
+      "size": 3696
+    },
+    {
+      "path": "ApiKit/Crud/Controllers/CrudController.Mapping.cs",
+      "size": 4358
+    },
+    {
+      "path": "ApiKit/Crud/Controllers/CrudController.Patch.cs",
+      "size": 3842
+    },
+    {
+      "path": "ApiKit/Crud/Controllers/CrudController.Query.cs",
+      "size": 3376
+    },
+    {
+      "path": "ApiKit/Crud/Controllers/CrudController.Routing.cs",
+      "size": 874
+    },
+    {
+      "path": "ApiKit/Crud/Controllers/CrudController.cs",
+      "size": 1901
+    },
+    {
+      "path": "ApiKit/Crud/Internal/EfEntityMetadata.cs",
+      "size": 1464
+    },
+    {
+      "path": "ApiKit/Crud/Internal/EfPrimaryKeyExpression.cs",
+      "size": 2361
+    },
+    {
+      "path": "ApiKit/Crud/Models/CrudPageOptions.cs",
+      "size": 467
+    },
+    {
+      "path": "ApiKit/Crud/Models/PagedResult.cs",
+      "size": 2318
+    },
+    {
+      "path": "ApiKit/Data/DependencyInjection/PostgreSqlServiceCollectionExtensions.cs",
+      "size": 4438
+    },
+    {
+      "path": "ApiKit/Management/Abstractions/IManagedServiceCredentialProvisioner.cs",
+      "size": 667
+    },
+    {
+      "path": "ApiKit/Management/Abstractions/IManagedServiceInstaller.cs",
+      "size": 955
+    },
+    {
+      "path": "ApiKit/Management/Abstractions/IManagedServiceLifecycleController.cs",
+      "size": 969
+    },
+    {
+      "path": "ApiKit/Management/Abstractions/IManagedServicePackageVerifier.cs",
+      "size": 751
+    },
+    {
+      "path": "ApiKit/Management/Abstractions/IManagementChallengeProvider.cs",
+      "size": 895
+    },
+    {
+      "path": "ApiKit/Management/Abstractions/IManagementCredentialProvider.cs",
+      "size": 725
+    },
+    {
+      "path": "ApiKit/Management/Abstractions/IManagementDescriptorContributor.cs",
+      "size": 637
+    },
+    {
+      "path": "ApiKit/Management/Abstractions/IManagementOperation.cs",
+      "size": 695
+    },
+    {
+      "path": "ApiKit/Management/Abstractions/IManagementOperationClient.cs",
+      "size": 505
+    },
+    {
+      "path": "ApiKit/Management/Abstractions/IManagementOperationDispatcher.cs",
+      "size": 904
+    },
+    {
+      "path": "ApiKit/Management/Abstractions/IManagementPeerAuthenticator.cs",
+      "size": 558
+    },
+    {
+      "path": "ApiKit/Management/Abstractions/IManagementPeerVerifier.cs",
+      "size": 547
+    },
+    {
+      "path": "ApiKit/Management/Abstractions/IManagementResourceClient.cs",
+      "size": 1799
+    },
+    {
+      "path": "ApiKit/Management/Abstractions/IManagementResourceDispatcher.cs",
+      "size": 1219
+    },
+    {
+      "path": "ApiKit/Management/Abstractions/IManagementServiceCatalog.cs",
+      "size": 839
+    },
+    {
+      "path": "ApiKit/Management/Abstractions/IManagementServiceDescriptorProvider.cs",
+      "size": 557
+    },
+    {
+      "path": "ApiKit/Management/Abstractions/IManagementServiceIdentityProvider.cs",
+      "size": 338
+    },
+    {
+      "path": "ApiKit/Management/Abstractions/IManagementServicePublisher.cs",
+      "size": 628
+    },
+    {
+      "path": "ApiKit/Management/Abstractions/IManagementServiceRegistry.cs",
+      "size": 643
+    },
+    {
+      "path": "ApiKit/Management/Builders/ApiKitManagementBuilder.cs",
+      "size": 4530
+    },
+    {
+      "path": "ApiKit/Management/Builders/ManagementServiceDescriptorBuilder.cs",
+      "size": 4855
+    },
+    {
+      "path": "ApiKit/Management/DependencyInjection/ManagementSecurityServiceCollectionExtensions.cs",
+      "size": 2064
+    },
+    {
+      "path": "ApiKit/Management/DependencyInjection/ManagementServiceCollectionExtensions.cs",
+      "size": 4731
+    },
+    {
+      "path": "ApiKit/Management/Exceptions/ManagementResourceException.cs",
+      "size": 994
+    },
+    {
+      "path": "ApiKit/Management/Internal/AspNetCoreEndpointDescriptorContributor.cs",
+      "size": 5202
+    },
+    {
+      "path": "ApiKit/Management/Internal/AspNetCoreServerAddressContributor.cs",
+      "size": 1321
+    },
+    {
+      "path": "ApiKit/Management/Internal/CrudManagementResourceRegistry.cs",
+      "size": 13112
+    },
+    {
+      "path": "ApiKit/Management/Internal/CrudResourceDescriptorContributor.cs",
+      "size": 808
+    },
+    {
+      "path": "ApiKit/Management/Internal/DefaultManagementServiceDescriptorProvider.cs",
+      "size": 1170
+    },
+    {
+      "path": "ApiKit/Management/Internal/IManagementOperationRegistration.cs",
+      "size": 367
+    },
+    {
+      "path": "ApiKit/Management/Internal/InMemoryManagementChallengeProvider.cs",
+      "size": 4989
+    },
+    {
+      "path": "ApiKit/Management/Internal/InMemoryManagementServicePublisher.cs",
+      "size": 659
+    },
+    {
+      "path": "ApiKit/Management/Internal/InMemoryManagementServiceRegistry.cs",
+      "size": 3684
+    },
+    {
+      "path": "ApiKit/Management/Internal/ManagementModelDescriptorFactory.cs",
+      "size": 3488
+    },
+    {
+      "path": "ApiKit/Management/Internal/ManagementOperationDescriptorContributor.cs",
+      "size": 834
+    },
+    {
+      "path": "ApiKit/Management/Internal/ManagementOperationDispatcher.cs",
+      "size": 3090
+    },
+    {
+      "path": "ApiKit/Management/Internal/ManagementOperationRegistration.cs",
+      "size": 2949
+    },
+    {
+      "path": "ApiKit/Management/Internal/ManagementRegistrationHostedService.cs",
+      "size": 4264
+    },
+    {
+      "path": "ApiKit/Management/Internal/ManagementResourceDispatcher.cs",
+      "size": 13821
+    },
+    {
+      "path": "ApiKit/Management/Internal/ManagementServiceIdentityProvider.cs",
+      "size": 2183
+    },
+    {
+      "path": "ApiKit/Management/Lifecycle/ManagedServicePackageManifest.cs",
+      "size": 1178
+    },
+    {
+      "path": "ApiKit/Management/Lifecycle/ManagedServiceState.cs",
+      "size": 938
+    },
+    {
+      "path": "ApiKit/Management/ManagementCapabilities.cs",
+      "size": 1489
+    },
+    {
+      "path": "ApiKit/Management/Models/ManagementEmptyRequest.cs",
+      "size": 191
+    },
+    {
+      "path": "ApiKit/Management/Models/ManagementEmptyResult.cs",
+      "size": 189
+    },
+    {
+      "path": "ApiKit/Management/Models/ManagementEndpointDescriptor.cs",
+      "size": 1525
+    },
+    {
+      "path": "ApiKit/Management/Models/ManagementModelDescriptor.cs",
+      "size": 467
+    },
+    {
+      "path": "ApiKit/Management/Models/ManagementOperationDescriptor.cs",
+      "size": 1091
+    },
+    {
+      "path": "ApiKit/Management/Models/ManagementOperationExecutionResult.cs",
+      "size": 699
+    },
+    {
+      "path": "ApiKit/Management/Models/ManagementPeerContext.cs",
+      "size": 984
+    },
+    {
+      "path": "ApiKit/Management/Models/ManagementPropertyDescriptor.cs",
+      "size": 1246
+    },
+    {
+      "path": "ApiKit/Management/Models/ManagementResourceDescriptor.cs",
+      "size": 1882
+    },
+    {
+      "path": "ApiKit/Management/Models/ManagementResourceExecutionResult.cs",
+      "size": 823
+    },
+    {
+      "path": "ApiKit/Management/Models/ManagementResourceOperation.cs",
+      "size": 803
+    },
+    {
+      "path": "ApiKit/Management/Models/ManagementResourcePage.cs",
+      "size": 1187
+    },
+    {
+      "path": "ApiKit/Management/Models/ManagementServiceAddress.cs",
+      "size": 264
+    },
+    {
+      "path": "ApiKit/Management/Models/ManagementServiceDescriptor.cs",
+      "size": 1433
+    },
+    {
+      "path": "ApiKit/Management/Models/ManagementServiceIdentity.cs",
+      "size": 873
+    },
+    {
+      "path": "ApiKit/Management/Models/ManagementServiceRegistration.cs",
+      "size": 403
+    },
+    {
+      "path": "ApiKit/Management/Models/ManagementTransportDescriptor.cs",
+      "size": 652
+    },
+    {
+      "path": "ApiKit/Management/Models/RegisteredManagementService.cs",
+      "size": 505
+    },
+    {
+      "path": "ApiKit/Management/Operations/ManagementOperationOptions.cs",
+      "size": 758
+    },
+    {
+      "path": "ApiKit/Management/Options/ApiKitManagementOptions.cs",
+      "size": 3581
+    },
+    {
+      "path": "ApiKit/Management/Options/ManagementResourceOptions.cs",
+      "size": 1342
+    },
+    {
+      "path": "ApiKit/Management/Options/ManagementSecurityOptions.cs",
+      "size": 619
+    },
+    {
+      "path": "ApiKit/Management/Provisioning/ManagedServiceCredentialDeprovisioningContext.cs",
+      "size": 617
+    },
+    {
+      "path": "ApiKit/Management/Provisioning/ManagedServiceCredentialProvisioningContext.cs",
+      "size": 762
+    },
+    {
+      "path": "ApiKit/Management/Provisioning/ManagedServiceProvisioningDefaults.cs",
+      "size": 342
+    },
+    {
+      "path": "ApiKit/Management/Security/ApiKitManagementAuthorizationDefaults.cs",
+      "size": 1920
+    },
+    {
+      "path": "ApiKit/Management/Security/ManagementAuthenticationResult.cs",
+      "size": 811
+    },
+    {
+      "path": "ApiKit/Management/Security/ManagementChallenge.cs",
+      "size": 1368
+    },
+    {
+      "path": "ApiKit/Management/Security/ManagementChallengeProofPayload.cs",
+      "size": 5963
+    },
+    {
+      "path": "ApiKit/Management/Security/ManagementChallengeResponse.cs",
+      "size": 858
+    },
+    {
+      "path": "ApiKit/Management/Security/ManagementPeerIdentity.cs",
+      "size": 2362
+    },
+    {
+      "path": "ApiKit/Management/Security/ManagementPeerIdentitySecurityComparer.cs",
+      "size": 827
+    },
+    {
+      "path": "ApiKit/Management/Security/ManagementPeerKind.cs",
+      "size": 587
+    },
+    {
+      "path": "ApiKit/Properties.AssemblyInfo.cs",
+      "size": 87
+    },
+    {
+      "path": "ApiKit/README.md",
+      "size": 9260
+    },
+    {
+      "path": "ApiKit/README.ru.md",
+      "size": 12410
+    },
+    {
+      "path": "README.md",
+      "size": 11418
+    },
+    {
+      "path": "README.ru.md",
+      "size": 15971
+    },
+    {
+      "path": "SECURITY_AUDIT.md",
+      "size": 7299
+    },
+    {
+      "path": "TESTING.md",
+      "size": 5811
+    },
+    {
+      "path": "external/CryptoKit/.gitattributes",
+      "size": 2581
+    },
+    {
+      "path": "external/CryptoKit/.gitignore",
+      "size": 6585
+    },
+    {
+      "path": "external/CryptoKit/CryptoKit.Tests/Aes/AesKeyGeneratorTests.cs",
+      "size": 1346
+    },
+    {
+      "path": "external/CryptoKit/CryptoKit.Tests/Aes/AesKeyProviderTests.cs",
+      "size": 5259
+    },
+    {
+      "path": "external/CryptoKit/CryptoKit.Tests/Aes/AesKeyTests.cs",
+      "size": 2320
+    },
+    {
+      "path": "external/CryptoKit/CryptoKit.Tests/CryptoKit.Tests.csproj",
+      "size": 733
+    },
+    {
+      "path": "external/CryptoKit/CryptoKit.Tests/DependencyInjection/ServiceCollectionExtensionsTests.cs",
+      "size": 3715
+    },
+    {
+      "path": "external/CryptoKit/CryptoKit.Tests/Helpers/AlwaysContendedKeyStorage.cs",
+      "size": 1622
+    },
+    {
+      "path": "external/CryptoKit/CryptoKit.Tests/Helpers/InMemoryKeyStorage.cs",
+      "size": 3917
+    },
+    {
+      "path": "external/CryptoKit/CryptoKit.Tests/Helpers/TemporaryDirectory.cs",
+      "size": 1130
+    },
+    {
+      "path": "external/CryptoKit/CryptoKit.Tests/Hmac/HmacKeyGeneratorTests.cs",
+      "size": 1264
+    },
+    {
+      "path": "external/CryptoKit/CryptoKit.Tests/Hmac/HmacKeyProviderTests.cs",
+      "size": 4132
+    },
+    {
+      "path": "external/CryptoKit/CryptoKit.Tests/Hmac/HmacKeyTests.cs",
+      "size": 1707
+    },
+    {
+      "path": "external/CryptoKit/CryptoKit.Tests/Internal/KeyIdValidatorTests.cs",
+      "size": 1529
+    },
+    {
+      "path": "external/CryptoKit/CryptoKit.Tests/Internal/KeyedLockTests.cs",
+      "size": 2406
+    },
+    {
+      "path": "external/CryptoKit/CryptoKit.Tests/Rsa/RsaKeyGeneratorTests.cs",
+      "size": 2038
+    },
+    {
+      "path": "external/CryptoKit/CryptoKit.Tests/Rsa/RsaKeyPairTests.cs",
+      "size": 3042
+    },
+    {
+      "path": "external/CryptoKit/CryptoKit.Tests/Rsa/RsaKeyProviderTests.cs",
+      "size": 5921
+    },
+    {
+      "path": "external/CryptoKit/CryptoKit.Tests/Secrets/SecretKeyMaterialTests.cs",
+      "size": 1821
+    },
+    {
+      "path": "external/CryptoKit/CryptoKit.Tests/Storage/FileKeyNameEncoderTests.cs",
+      "size": 1564
+    },
+    {
+      "path": "external/CryptoKit/CryptoKit.Tests/Storage/FileKeyStorageTests.cs",
+      "size": 22282
+    },
+    {
+      "path": "external/CryptoKit/CryptoKit.slnx",
+      "size": 135
+    },
+    {
+      "path": "external/CryptoKit/CryptoKit/Aes/AesKey.cs",
+      "size": 1647
+    },
+    {
+      "path": "external/CryptoKit/CryptoKit/Aes/AesKeyGenerator.cs",
+      "size": 1278
+    },
+    {
+      "path": "external/CryptoKit/CryptoKit/Aes/AesServiceCollectionExtensions.cs",
+      "size": 1951
+    },
+    {
+      "path": "external/CryptoKit/CryptoKit/Aes/Options/AesKeyOptions.cs",
+      "size": 588
+    },
+    {
+      "path": "external/CryptoKit/CryptoKit/Aes/Options/AesKeyOptionsValidator.cs",
+      "size": 971
+    },
+    {
+      "path": "external/CryptoKit/CryptoKit/Aes/Provider/AesKeyProvider.cs",
+      "size": 2001
+    },
+    {
+      "path": "external/CryptoKit/CryptoKit/Aes/Provider/IAesKeyProvider.cs",
+      "size": 2372
+    },
+    {
+      "path": "external/CryptoKit/CryptoKit/CryptoKit.csproj",
+      "size": 347
+    },
+    {
+      "path": "external/CryptoKit/CryptoKit/Hmac/HmacKey.cs",
+      "size": 1614
+    },
+    {
+      "path": "external/CryptoKit/CryptoKit/Hmac/HmacKeyGenerator.cs",
+      "size": 1316
+    },
+    {
+      "path": "external/CryptoKit/CryptoKit/Hmac/HmacServiceCollectionExtensions.cs",
+      "size": 1966
+    },
+    {
+      "path": "external/CryptoKit/CryptoKit/Hmac/Options/HmacKeyOptions.cs",
+      "size": 683
+    },
+    {
+      "path": "external/CryptoKit/CryptoKit/Hmac/Options/HmacKeyOptionsValidator.cs",
+      "size": 2066
+    },
+    {
+      "path": "external/CryptoKit/CryptoKit/Hmac/Provider/HmacKeyProvider.cs",
+      "size": 2018
+    },
+    {
+      "path": "external/CryptoKit/CryptoKit/Hmac/Provider/IHmacKeyProvider.cs",
+      "size": 2385
+    },
+    {
+      "path": "external/CryptoKit/CryptoKit/Internal/KeyCreationRetryPolicy.cs",
+      "size": 1095
+    },
+    {
+      "path": "external/CryptoKit/CryptoKit/Internal/KeyIdValidator.cs",
+      "size": 1911
+    },
+    {
+      "path": "external/CryptoKit/CryptoKit/Internal/KeyProviderServiceCollectionRegistration.cs",
+      "size": 1337
+    },
+    {
+      "path": "external/CryptoKit/CryptoKit/Internal/KeyedLock.cs",
+      "size": 4530
+    },
+    {
+      "path": "external/CryptoKit/CryptoKit/Internal/StoredSecretKeyProvider.cs",
+      "size": 8455
+    },
+    {
+      "path": "external/CryptoKit/CryptoKit/Properties/AssemblyInfo.cs",
+      "size": 93
+    },
+    {
+      "path": "external/CryptoKit/CryptoKit/Rsa/Options/RsaKeyOptions.cs",
+      "size": 720
+    },
+    {
+      "path": "external/CryptoKit/CryptoKit/Rsa/Options/RsaKeyOptionsValidator.cs",
+      "size": 2590
+    },
+    {
+      "path": "external/CryptoKit/CryptoKit/Rsa/Provider/IRsaKeyProvider.cs",
+      "size": 4936
+    },
+    {
+      "path": "external/CryptoKit/CryptoKit/Rsa/Provider/RsaKeyProvider.cs",
+      "size": 13533
+    },
+    {
+      "path": "external/CryptoKit/CryptoKit/Rsa/RsaKeyGenerator.cs",
+      "size": 1493
+    },
+    {
+      "path": "external/CryptoKit/CryptoKit/Rsa/RsaKeyPair.cs",
+      "size": 7397
+    },
+    {
+      "path": "external/CryptoKit/CryptoKit/Rsa/RsaServiceCollectionExtensions.cs",
+      "size": 1961
+    },
+    {
+      "path": "external/CryptoKit/CryptoKit/Secrets/SecretKeyMaterial.cs",
+      "size": 4673
+    },
+    {
+      "path": "external/CryptoKit/CryptoKit/Storage/FileKeyStorage.cs",
+      "size": 21996
+    },
+    {
+      "path": "external/CryptoKit/CryptoKit/Storage/IKeyStorage.cs",
+      "size": 4868
+    },
+    {
+      "path": "external/CryptoKit/CryptoKit/Storage/Internal/FileKeyNameEncoder.cs",
+      "size": 841
+    },
+    {
+      "path": "external/CryptoKit/CryptoKit/Storage/Options/FileKeyStorageOptions.cs",
+      "size": 780
+    },
+    {
+      "path": "external/CryptoKit/CryptoKit/Storage/Options/FileKeyStorageOptionsValidator.cs",
+      "size": 1723
+    },
+    {
+      "path": "external/CryptoKit/CryptoKit/Storage/StorageServiceCollectionExtensions.cs",
+      "size": 1490
+    },
+    {
+      "path": "external/CryptoKit/LICENSE.txt",
+      "size": 1083
+    },
+    {
+      "path": "external/CryptoKit/README.md",
+      "size": 26089
+    },
+    {
+      "path": "external/CryptoKit/README.ru.md",
+      "size": 34581
+    },
+    {
+      "path": "scripts/Run-Stage10-WindowsAdmin.ps1",
+      "size": 1465
+    },
+    {
+      "path": "scripts/Run-Stage10.ps1",
+      "size": 936
+    },
+    {
+      "path": "scripts/Verify-Build.ps1",
+      "size": 2730
+    },
+    {
+      "path": "scripts/check_english_comments.py",
+      "size": 1246
+    }
+  ],
+  "omitted": [],
+  "excluded": [
+    {
+      "path": ".git",
+      "reason": "GitMetadata"
+    },
+    {
+      "path": "ApiKit.Management.CryptoKit.Tests/bin",
+      "reason": "BuildOutput"
+    },
+    {
+      "path": "ApiKit.Management.CryptoKit.Tests/obj",
+      "reason": "BuildOutput"
+    },
+    {
+      "path": "ApiKit.Management.CryptoKit/bin",
+      "reason": "BuildOutput"
+    },
+    {
+      "path": "ApiKit.Management.CryptoKit/obj",
+      "reason": "BuildOutput"
+    },
+    {
+      "path": "ApiKit.Management.Windows.TestWorker/bin",
+      "reason": "BuildOutput"
+    },
+    {
+      "path": "ApiKit.Management.Windows.TestWorker/obj",
+      "reason": "BuildOutput"
+    },
+    {
+      "path": "ApiKit.Management.Windows.Tests/bin",
+      "reason": "BuildOutput"
+    },
+    {
+      "path": "ApiKit.Management.Windows.Tests/obj",
+      "reason": "BuildOutput"
+    },
+    {
+      "path": "ApiKit.Management.Windows/bin",
+      "reason": "BuildOutput"
+    },
+    {
+      "path": "ApiKit.Management.Windows/obj",
+      "reason": "BuildOutput"
+    },
+    {
+      "path": "ApiKit.Tests/bin",
+      "reason": "BuildOutput"
+    },
+    {
+      "path": "ApiKit.Tests/obj",
+      "reason": "BuildOutput"
+    },
+    {
+      "path": "ApiKit/bin",
+      "reason": "BuildOutput"
+    },
+    {
+      "path": "ApiKit/obj",
+      "reason": "BuildOutput"
+    },
+    {
+      "path": "external/CryptoKit/.git",
+      "reason": "GitMetadata"
+    },
+    {
+      "path": "external/CryptoKit/CryptoKit/bin",
+      "reason": "BuildOutput"
+    },
+    {
+      "path": "external/CryptoKit/CryptoKit/obj",
+      "reason": "BuildOutput"
+    }
+  ]
+}

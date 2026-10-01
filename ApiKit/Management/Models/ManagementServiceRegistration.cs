@@ -1,10 +1,10 @@
 namespace ApiKit.Management.Models;
 
 /// <summary>
-/// Описывает регистрацию экземпляра сервиса в management registry.
+/// Defines the management or application behavior of management service registration.
 /// </summary>
-/// <param name="Descriptor">Актуальный descriptor сервиса.</param>
-/// <param name="LeaseDuration">Срок действия регистрации без следующего heartbeat.</param>
+/// <param name="Descriptor">The descriptor value.</param>
+/// <param name="LeaseDuration">The lease duration value.</param>
 public sealed record ManagementServiceRegistration(
     ManagementServiceDescriptor Descriptor,
     TimeSpan LeaseDuration);

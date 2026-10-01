@@ -9,7 +9,7 @@ using System.Security.Claims;
 namespace ApiKit.Authentication.Services;
 
 /// <summary>
-/// Создаёт JWT-токены, не привязываясь к конкретному механизму хранения ключей.
+/// Creates signed JWT tokens from validated generation options.
 /// </summary>
 internal sealed class JwtTokenGenerator : IJwtTokenGenerator
 {
@@ -31,11 +31,11 @@ internal sealed class JwtTokenGenerator : IJwtTokenGenerator
     private readonly JwtSecurityTokenHandler _tokenHandler = new();
 
     /// <summary>
-    /// Создаёт генератор JWT-токенов.
+    /// Initializes a new JwtTokenGenerator instance.
     /// </summary>
-    /// <param name="options">Настройки создания JWT-токенов.</param>
-    /// <param name="signingCredentialsProvider">Провайдер параметров подписи.</param>
-    /// <param name="timeProvider">Источник текущего времени.</param>
+    /// <param name="options">The configuration options.</param>
+    /// <param name="signingCredentialsProvider">The signing credentials provider value.</param>
+    /// <param name="timeProvider">The source of the current time.</param>
     public JwtTokenGenerator(
         IOptions<JwtTokenGenerationOptions> options,
         IJwtSigningCredentialsProvider signingCredentialsProvider,
@@ -82,8 +82,6 @@ internal sealed class JwtTokenGenerator : IJwtTokenGenerator
             Expires = expiresAt.UtcDateTime,
             SigningCredentials = _signingCredentialsProvider.GetSigningCredentials(),
 
-            // Если ключ подписи содержит KeyId, он автоматически попадёт в kid
-            // и сможет использоваться для выбора ключа при проверке токена.
             IncludeKeyIdInHeader = true,
             TokenType = "JWT"
         };
@@ -99,7 +97,7 @@ internal sealed class JwtTokenGenerator : IJwtTokenGenerator
     }
 
     /// <summary>
-    /// Проверяет параметры конкретного запроса на выпуск токена.
+    /// Validates request.
     /// </summary>
     private static void ValidateRequest(JwtTokenRequest request)
     {

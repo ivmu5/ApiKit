@@ -1,39 +1,52 @@
 namespace ApiKit.Management.Security;
 
 /// <summary>
-/// Представляет одноразовый challenge для подтверждения владения management credential.
+/// Represents a one-time challenge bound to issuer, subject, nonce, protocol context, and expiration.
 /// </summary>
-/// <remarks>
-/// При формировании криптографического proof необходимо связывать с подписью весь контекст challenge,
-/// а не только <see cref="Nonce"/>. Это предотвращает перенос корректного proof между разными transport,
-/// назначениями протокола или участниками management plane.
-/// </remarks>
 public sealed record ManagementChallenge
 {
-    /// <summary>Уникальный идентификатор challenge.</summary>
+    /// <summary>
+    /// Gets or sets challenge id.
+    /// </summary>
     public required string ChallengeId { get; init; }
 
-    /// <summary>Участник, выпустивший challenge.</summary>
+    /// <summary>
+    /// Gets or sets issuer.
+    /// </summary>
     public required ManagementPeerIdentity Issuer { get; init; }
 
-    /// <summary>Участник, который должен подтвердить владение credential.</summary>
+    /// <summary>
+    /// Gets or sets subject.
+    /// </summary>
     public required ManagementPeerIdentity Subject { get; init; }
 
-    /// <summary>Криптографически случайное одноразовое значение.</summary>
+    /// <summary>
+    /// Gets or sets nonce.
+    /// </summary>
     public required byte[] Nonce { get; init; }
 
-    /// <summary>Transport, в рамках которого выпущен challenge.</summary>
+    /// <summary>
+    /// Gets or sets transport.
+    /// </summary>
     public required string Transport { get; init; }
 
-    /// <summary>Назначение соединения, например registration, administration или management.</summary>
+    /// <summary>
+    /// Gets or sets purpose.
+    /// </summary>
     public required string Purpose { get; init; }
 
-    /// <summary>Версия management transport protocol, для которой выпущен challenge.</summary>
+    /// <summary>
+    /// Gets or sets protocol version.
+    /// </summary>
     public required int ProtocolVersion { get; init; }
 
-    /// <summary>Время выпуска challenge в UTC.</summary>
+    /// <summary>
+    /// Gets or sets issued at utc.
+    /// </summary>
     public required DateTimeOffset IssuedAtUtc { get; init; }
 
-    /// <summary>Момент, после которого challenge не должен приниматься.</summary>
+    /// <summary>
+    /// Gets or sets expires at utc.
+    /// </summary>
     public required DateTimeOffset ExpiresAtUtc { get; init; }
 }

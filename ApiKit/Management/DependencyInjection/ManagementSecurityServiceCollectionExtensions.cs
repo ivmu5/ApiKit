@@ -7,17 +7,16 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 namespace ApiKit.Management;
 
 /// <summary>
-/// Содержит регистрацию transport-independent компонентов management security.
+/// Defines extension methods for management security service collection extensions.
 /// </summary>
 public static class ManagementSecurityServiceCollectionExtensions
 {
     /// <summary>
-    /// Добавляет одноразовый in-memory challenge provider для challenge-response
-    /// аутентификации management peer.
+    /// Registers API kit management security.
     /// </summary>
-    /// <param name="services">Коллекция сервисов приложения.</param>
-    /// <param name="configure">Необязательная настройка challenge.</param>
-    /// <returns>Исходная коллекция сервисов.</returns>
+    /// <param name="services">The dependency injection service collection.</param>
+    /// <param name="configure">An optional configuration callback.</param>
+    /// <returns>The builder or service collection for further configuration.</returns>
     public static IServiceCollection AddApiKitManagementSecurity(
         this IServiceCollection services,
         Action<ManagementSecurityOptions>? configure = null)

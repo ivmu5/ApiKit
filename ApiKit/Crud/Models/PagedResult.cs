@@ -1,18 +1,18 @@
 namespace ApiKit.Crud.Models;
 
 /// <summary>
-/// Представляет страницу результатов CRUD-запроса.
+/// Contains one page of query results and its pagination metadata.
 /// </summary>
-/// <typeparam name="T">Тип возвращаемой модели.</typeparam>
+/// <typeparam name="T">The type of each result item.</typeparam>
 public sealed class PagedResult<T>
 {
     /// <summary>
-    /// Создаёт описание страницы результатов.
+    /// Initializes a new PagedResult instance.
     /// </summary>
-    /// <param name="items">Элементы текущей страницы.</param>
-    /// <param name="page">Номер текущей страницы.</param>
-    /// <param name="pageSize">Размер страницы.</param>
-    /// <param name="totalCount">Общее количество элементов после фильтрации.</param>
+    /// <param name="items">The items value.</param>
+    /// <param name="page">The page number.</param>
+    /// <param name="pageSize">The maximum number of items per page.</param>
+    /// <param name="totalCount">The total number of available items.</param>
     public PagedResult(
         IReadOnlyList<T> items,
         int page,
@@ -43,38 +43,38 @@ public sealed class PagedResult<T>
     }
 
     /// <summary>
-    /// Элементы текущей страницы.
+    /// Gets items.
     /// </summary>
     public IReadOnlyList<T> Items { get; }
 
     /// <summary>
-    /// Номер текущей страницы.
+    /// Gets page.
     /// </summary>
     public int Page { get; }
 
     /// <summary>
-    /// Размер страницы.
+    /// Gets page size.
     /// </summary>
     public int PageSize { get; }
 
     /// <summary>
-    /// Общее количество элементов после фильтрации.
+    /// Gets total count.
     /// </summary>
     public long TotalCount { get; }
 
     /// <summary>
-    /// Общее количество страниц.
+    /// Gets the number of pages needed to include all items.
     /// </summary>
     public long TotalPages =>
         TotalCount / PageSize + (TotalCount % PageSize == 0 ? 0 : 1);
 
     /// <summary>
-    /// Указывает, существует ли предыдущая страница.
+    /// Indicates whether a previous page exists.
     /// </summary>
     public bool HasPreviousPage => Page > 1;
 
     /// <summary>
-    /// Указывает, существует ли следующая страница.
+    /// Indicates whether a next page exists.
     /// </summary>
     public bool HasNextPage => Page < TotalPages;
 }

@@ -8,22 +8,16 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 namespace ApiKit.Authorization;
 
 /// <summary>
-/// Содержит методы регистрации permission-based авторизации ApiKit.
+/// Defines extension methods for authorization service collection extensions.
 /// </summary>
 public static class AuthorizationServiceCollectionExtensions
 {
     /// <summary>
-    /// Добавляет стандартную ASP.NET Core authorization-инфраструктуру
-    /// и поддержку динамических permission policies.
+    /// Registers API kit authorization.
     /// </summary>
-    /// <remarks>
-    /// ApiKit создаёт permission policies через стандартный
-    /// <see cref="IAuthorizationPolicyProvider"/> только при их запросе ASP.NET Core.
-    /// Обычные policies приложения обслуживаются стандартным поставщиком ASP.NET Core.
-    /// </remarks>
-    /// <param name="services">Коллекция сервисов приложения.</param>
-    /// <param name="configure">Необязательная настройка соглашений permissions.</param>
-    /// <returns>Исходная коллекция сервисов.</returns>
+    /// <param name="services">The dependency injection service collection.</param>
+    /// <param name="configure">An optional configuration callback.</param>
+    /// <returns>The builder or service collection for further configuration.</returns>
     public static IServiceCollection AddApiKitAuthorization(
         this IServiceCollection services,
         Action<ApiKitAuthorizationOptions>? configure = null)
@@ -47,9 +41,6 @@ public static class AuthorizationServiceCollectionExtensions
 
         services.TryAddSingleton<IPermissionNameResolver, PermissionNameResolver>();
 
-        // ASP.NET Core использует один IAuthorizationPolicyProvider. Поставщик ApiKit
-        // обрабатывает только собственные политики разрешений и делегирует остальные
-        // стандартному DefaultAuthorizationPolicyProvider.
         services.Replace(
             ServiceDescriptor.Singleton<
                 IAuthorizationPolicyProvider,

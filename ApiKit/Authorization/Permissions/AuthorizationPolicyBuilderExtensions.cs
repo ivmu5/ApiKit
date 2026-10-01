@@ -3,19 +3,17 @@ using Microsoft.AspNetCore.Authorization;
 namespace ApiKit.Authorization.Permissions;
 
 /// <summary>
-/// Содержит расширения стандартного <see cref="AuthorizationPolicyBuilder"/>
-/// для permission-based authorization.
+/// Defines extension methods for authorization policy builder extensions.
 /// </summary>
 public static class AuthorizationPolicyBuilderExtensions
 {
     /// <summary>
-    /// Добавляет в policy требование аутентифицированного пользователя
-    /// с указанным permission claim.
+    /// Adds an ASP.NET Core authorization requirement for the specified permission.
     /// </summary>
-    /// <param name="builder">Стандартный builder authorization policy.</param>
-    /// <param name="permission">Требуемое разрешение.</param>
-    /// <param name="claimType">Тип claim, содержащего permissions.</param>
-    /// <returns>Исходный builder authorization policy.</returns>
+    /// <param name="builder">The service or endpoint builder.</param>
+    /// <param name="permission">The permission value.</param>
+    /// <param name="claimType">The claim type value.</param>
+    /// <returns>The result of the operation.</returns>
     public static AuthorizationPolicyBuilder RequirePermission(
         this AuthorizationPolicyBuilder builder,
         string permission,
@@ -26,7 +24,6 @@ public static class AuthorizationPolicyBuilderExtensions
         ArgumentException.ThrowIfNullOrWhiteSpace(permission);
         ArgumentException.ThrowIfNullOrWhiteSpace(claimType);
 
-        // Используем встроенные требования ASP.NET Core вместо собственного
         // PermissionRequirement/PermissionHandler.
         return builder
             .RequireAuthenticatedUser()

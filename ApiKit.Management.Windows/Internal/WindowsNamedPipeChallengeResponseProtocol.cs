@@ -5,9 +5,7 @@ using ApiKit.Management.Security;
 namespace ApiKit.Management.Windows.Internal;
 
 /// <summary>
-/// Реализует wire-level challenge-response handshake поверх существующего
-/// length-prefixed Named Pipe transport. Симметричные операции используются
-/// для построения взаимной аутентификации management peers.
+/// Implements mutual challenge-response authentication over the length-prefixed Named Pipe transport.
 /// </summary>
 internal static class WindowsNamedPipeChallengeResponseProtocol
 {
@@ -19,12 +17,24 @@ internal static class WindowsNamedPipeChallengeResponseProtocol
         int maxMessageBytes,
         CancellationToken cancellationToken,
         ManagementPeerIdentity? expectedChallengeIssuer = null,
-        Func<ManagementPeerIdentity, bool>? challengeIssuerValidator = null)
+        Func<ManagementPeerIdentity, bool>? challengeIssuerValidator = null,
+        TimeSpan? maximumHandshakeDuration = null)
     {
         ArgumentNullException.ThrowIfNull(stream);
         ArgumentNullException.ThrowIfNull(localIdentity);
         ArgumentNullException.ThrowIfNull(credentialProvider);
         ArgumentException.ThrowIfNullOrWhiteSpace(purpose);
+
+        // Bound every challenge-response round trip to avoid retaining open
+        // Named Pipe instances indefinitely for stalled or hostile peers.
+        if (maximumHandshakeDuration is { } duration && duration <= TimeSpan.Zero)
+        {
+            throw new ArgumentOutOfRangeException(nameof(maximumHandshakeDuration));
+        }
+
+        using var handshakeTimeout = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+        handshakeTimeout.CancelAfter(maximumHandshakeDuration ?? TimeSpan.FromSeconds(30));
+        var handshakeToken = handshakeTimeout.Token;
 
         ValidateIdentity(localIdentity, nameof(localIdentity));
 
@@ -35,12 +45,12 @@ internal static class WindowsNamedPipeChallengeResponseProtocol
                 Identity = localIdentity
             },
             maxMessageBytes,
-            cancellationToken);
+            handshakeToken);
 
         var challengeFrame = await WindowsNamedPipeMessageSerializer.ReadAsync<WindowsNamedPipeSecurityChallenge>(
             stream,
             maxMessageBytes,
-            cancellationToken);
+            handshakeToken);
 
         EnsureProtocolVersion(challengeFrame.ProtocolVersion);
 
@@ -60,7 +70,7 @@ internal static class WindowsNamedPipeChallengeResponseProtocol
         var response = await credentialProvider.CreateChallengeResponseAsync(
             localIdentity,
             challengeFrame.Challenge,
-            cancellationToken);
+            handshakeToken);
 
         await WindowsNamedPipeMessageSerializer.WriteAsync(
             stream,
@@ -69,12 +79,12 @@ internal static class WindowsNamedPipeChallengeResponseProtocol
                 Response = response
             },
             maxMessageBytes,
-            cancellationToken);
+            handshakeToken);
 
         var resultFrame = await WindowsNamedPipeMessageSerializer.ReadAsync<WindowsNamedPipeSecurityResult>(
             stream,
             maxMessageBytes,
-            cancellationToken);
+            handshakeToken);
 
         EnsureProtocolVersion(resultFrame.ProtocolVersion);
 
@@ -120,7 +130,8 @@ internal static class WindowsNamedPipeChallengeResponseProtocol
         string purpose,
         int maxMessageBytes,
         CancellationToken cancellationToken,
-        Func<ManagementPeerIdentity, bool>? identityValidator = null)
+        Func<ManagementPeerIdentity, bool>? identityValidator = null,
+        TimeSpan? maximumHandshakeDuration = null)
     {
         ArgumentNullException.ThrowIfNull(stream);
         ArgumentNullException.ThrowIfNull(verifierIdentity);
@@ -129,12 +140,23 @@ internal static class WindowsNamedPipeChallengeResponseProtocol
         ArgumentNullException.ThrowIfNull(peerVerifier);
         ArgumentException.ThrowIfNullOrWhiteSpace(purpose);
 
+        // Bound every challenge-response round trip to avoid retaining open
+        // Named Pipe instances indefinitely for stalled or hostile peers.
+        if (maximumHandshakeDuration is { } duration && duration <= TimeSpan.Zero)
+        {
+            throw new ArgumentOutOfRangeException(nameof(maximumHandshakeDuration));
+        }
+
+        using var handshakeTimeout = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+        handshakeTimeout.CancelAfter(maximumHandshakeDuration ?? TimeSpan.FromSeconds(30));
+        var handshakeToken = handshakeTimeout.Token;
+
         ValidateIdentity(verifierIdentity, nameof(verifierIdentity));
 
         var hello = await WindowsNamedPipeMessageSerializer.ReadAsync<WindowsNamedPipeSecurityHello>(
             stream,
             maxMessageBytes,
-            cancellationToken);
+            handshakeToken);
 
         if (hello.ProtocolVersion != WindowsNamedPipeProtocol.Version)
         {
@@ -142,7 +164,7 @@ internal static class WindowsNamedPipeChallengeResponseProtocol
                 "protocol_version",
                 "Версия challenge-response protocol не поддерживается.");
 
-            await WriteResultAsync(stream, versionFailure, maxMessageBytes, cancellationToken);
+            await WriteResultAsync(stream, versionFailure, maxMessageBytes, handshakeToken);
             return versionFailure;
         }
 
@@ -153,7 +175,7 @@ internal static class WindowsNamedPipeChallengeResponseProtocol
         catch (ArgumentException exception)
         {
             var identityFailure = Failure("identity_invalid", exception.Message);
-            await WriteResultAsync(stream, identityFailure, maxMessageBytes, cancellationToken);
+            await WriteResultAsync(stream, identityFailure, maxMessageBytes, handshakeToken);
             return identityFailure;
         }
 
@@ -163,7 +185,7 @@ internal static class WindowsNamedPipeChallengeResponseProtocol
                 "identity_unexpected",
                 "Management peer предъявил identity, недопустимую для этого соединения.");
 
-            await WriteResultAsync(stream, identityFailure, maxMessageBytes, cancellationToken);
+            await WriteResultAsync(stream, identityFailure, maxMessageBytes, handshakeToken);
             return identityFailure;
         }
 
@@ -178,7 +200,7 @@ internal static class WindowsNamedPipeChallengeResponseProtocol
                 WindowsManagementTransportDefaults.TransportName,
                 purpose,
                 WindowsNamedPipeProtocol.Version,
-                cancellationToken);
+                handshakeToken);
 
             await WindowsNamedPipeMessageSerializer.WriteAsync(
                 stream,
@@ -187,12 +209,12 @@ internal static class WindowsNamedPipeChallengeResponseProtocol
                     Challenge = challenge
                 },
                 maxMessageBytes,
-                cancellationToken);
+                handshakeToken);
 
             var responseFrame = await WindowsNamedPipeMessageSerializer.ReadAsync<WindowsNamedPipeSecurityResponse>(
                 stream,
                 maxMessageBytes,
-                cancellationToken);
+                handshakeToken);
 
             if (responseFrame.ProtocolVersion != WindowsNamedPipeProtocol.Version)
             {
@@ -200,7 +222,7 @@ internal static class WindowsNamedPipeChallengeResponseProtocol
                     "protocol_version",
                     "Версия challenge-response protocol не поддерживается.");
 
-                await WriteResultAsync(stream, versionFailure, maxMessageBytes, cancellationToken);
+                await WriteResultAsync(stream, versionFailure, maxMessageBytes, handshakeToken);
                 return versionFailure;
             }
 
@@ -210,13 +232,13 @@ internal static class WindowsNamedPipeChallengeResponseProtocol
                     "response_missing",
                     "Challenge-response сообщение не содержит proof.");
 
-                await WriteResultAsync(stream, responseFailure, maxMessageBytes, cancellationToken);
+                await WriteResultAsync(stream, responseFailure, maxMessageBytes, handshakeToken);
                 return responseFailure;
             }
 
             var consumedChallenge = await challengeProvider.ConsumeChallengeAsync(
                 challenge.ChallengeId,
-                cancellationToken);
+                handshakeToken);
             challengeConsumed = true;
 
             if (consumedChallenge is null)
@@ -225,7 +247,7 @@ internal static class WindowsNamedPipeChallengeResponseProtocol
                     "challenge_invalid",
                     "Management challenge неизвестен, истёк или уже был использован.");
 
-                await WriteResultAsync(stream, challengeFailure, maxMessageBytes, cancellationToken);
+                await WriteResultAsync(stream, challengeFailure, maxMessageBytes, handshakeToken);
                 return challengeFailure;
             }
 
@@ -233,15 +255,13 @@ internal static class WindowsNamedPipeChallengeResponseProtocol
                 transportPeer,
                 consumedChallenge,
                 responseFrame.Response,
-                cancellationToken);
+                handshakeToken);
 
-            await WriteResultAsync(stream, result, maxMessageBytes, cancellationToken);
+            await WriteResultAsync(stream, result, maxMessageBytes, handshakeToken);
             return result;
         }
         finally
         {
-            // Если клиент оборвал соединение после получения challenge, освобождаем его немедленно,
-            // а не ждём истечения TTL. Consume остаётся атомарным и безопасен при повторном вызове.
             if (challenge is not null && !challengeConsumed)
             {
                 try
@@ -252,7 +272,6 @@ internal static class WindowsNamedPipeChallengeResponseProtocol
                 }
                 catch
                 {
-                    // Cleanup не должен скрывать исходную ошибку transport/handshake.
                 }
             }
         }

@@ -1,37 +1,57 @@
 namespace ApiKit.Management.Models;
 
 /// <summary>
-/// Описывает HTTP endpoint, обнаруженный средствами ASP.NET Core.
+/// Describes the transport endpoint exposed by a managed service.
 /// </summary>
 public sealed record ManagementEndpointDescriptor
 {
-    /// <summary>Уникальное или отображаемое имя endpoint.</summary>
+    /// <summary>
+    /// Gets or sets name.
+    /// </summary>
     public required string Name { get; init; }
 
-    /// <summary>Шаблон маршрута endpoint.</summary>
+    /// <summary>
+    /// Gets or sets route.
+    /// </summary>
     public required string Route { get; init; }
 
-    /// <summary>Поддерживаемые HTTP-методы.</summary>
+    /// <summary>
+    /// Gets or sets http methods.
+    /// </summary>
     public required IReadOnlyList<string> HttpMethods { get; init; }
 
-    /// <summary>Группа endpoint, если она определена стандартными ASP.NET metadata.</summary>
+    /// <summary>
+    /// Gets or sets group name.
+    /// </summary>
     public string? GroupName { get; init; }
 
-    /// <summary>Имя MVC-контроллера, если endpoint относится к controller action.</summary>
+    /// <summary>
+    /// Gets or sets controller name.
+    /// </summary>
     public string? ControllerName { get; init; }
 
-    /// <summary>Имя MVC action, если endpoint относится к controller action.</summary>
+    /// <summary>
+    /// Gets or sets action name.
+    /// </summary>
     public string? ActionName { get; init; }
 
-    /// <summary>Признак наличия <c>AllowAnonymous</c>.</summary>
+    /// <summary>
+    /// Gets or sets whether allows anonymous is enabled.
+    /// </summary>
     public bool AllowsAnonymous { get; init; }
 
-    /// <summary>Явно заданные authorization policies.</summary>
+    /// <summary>
+    /// Gets or sets authorization policies.
+    /// </summary>
     public IReadOnlyList<string> AuthorizationPolicies { get; init; } = [];
 
-    /// <summary>Явно заданные role-based ограничения.</summary>
+    /// <summary>
+    /// Gets or sets authorization roles.
+    /// </summary>
     public IReadOnlyList<string> AuthorizationRoles { get; init; } = [];
 
-    /// <summary>Явно заданные authentication schemes.</summary>
+    /// <summary>
+    /// Gets or sets authentication schemes.
+    /// </summary>
     public IReadOnlyList<string> AuthenticationSchemes { get; init; } = [];
 }

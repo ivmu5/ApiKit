@@ -16,21 +16,17 @@ public abstract partial class CrudController<
     where TUpdateModel : class
 {
     /// <summary>
-    /// Возвращает LINQ projection для чтения DTO непосредственно в SQL.
+    /// Returns read projection.
     /// </summary>
-    /// <returns>Projection или <see langword="null"/>.</returns>
-    /// <remarks>
-    /// Если projection не задан, query материализуется в entity, после чего
-    /// вызывается <see cref="MapReadModelAsync"/>.
-    /// </remarks>
+    /// <returns>The requested value.</returns>
     protected virtual Expression<Func<TEntity, TReadModel>>? GetReadProjection() => null;
 
     /// <summary>
-    /// Материализует collection query в публичные read-модели.
+    /// Materializes projected read models asynchronously using EF Core.
     /// </summary>
-    /// <param name="query">Запрос entity.</param>
-    /// <param name="cancellationToken">Токен отмены.</param>
-    /// <returns>Read-модели.</returns>
+    /// <param name="query">The query value.</param>
+    /// <param name="cancellationToken">A token that cancels this operation.</param>
+    /// <returns>The result of the operation.</returns>
     protected virtual async Task<IReadOnlyList<TReadModel>> MaterializeReadModelsAsync(
         IQueryable<TEntity> query,
         CancellationToken cancellationToken)
@@ -54,11 +50,11 @@ public abstract partial class CrudController<
     }
 
     /// <summary>
-    /// Преобразует entity в публичную read-модель.
+    /// Configures a mapping for read model async.
     /// </summary>
-    /// <param name="entity">Исходная entity.</param>
-    /// <param name="cancellationToken">Токен отмены.</param>
-    /// <returns>Read-модель.</returns>
+    /// <param name="entity">The entity value.</param>
+    /// <param name="cancellationToken">A token that cancels this operation.</param>
+    /// <returns>The result of the operation.</returns>
     protected virtual ValueTask<TReadModel> MapReadModelAsync(
         TEntity entity,
         CancellationToken cancellationToken)
@@ -76,11 +72,11 @@ public abstract partial class CrudController<
     }
 
     /// <summary>
-    /// Создаёт EF Core entity из POST-модели.
+    /// Creates entity async.
     /// </summary>
-    /// <param name="model">Модель создания.</param>
-    /// <param name="cancellationToken">Токен отмены.</param>
-    /// <returns>Созданная entity.</returns>
+    /// <param name="model">The input data model.</param>
+    /// <param name="cancellationToken">A token that cancels this operation.</param>
+    /// <returns>The created value.</returns>
     protected virtual ValueTask<TEntity> CreateEntityAsync(
         TCreateModel model,
         CancellationToken cancellationToken) =>
@@ -89,12 +85,12 @@ public abstract partial class CrudController<
             $"или action {nameof(Create)}.");
 
     /// <summary>
-    /// Применяет PUT/PATCH update-модель к отслеживаемой entity.
+    /// Applies update model async.
     /// </summary>
-    /// <param name="entity">Изменяемая entity.</param>
-    /// <param name="model">Модель обновления.</param>
-    /// <param name="cancellationToken">Токен отмены.</param>
-    /// <returns>Ожидаемая операция.</returns>
+    /// <param name="entity">The entity value.</param>
+    /// <param name="model">The input data model.</param>
+    /// <param name="cancellationToken">A token that cancels this operation.</param>
+    /// <returns>The result of the operation.</returns>
     protected virtual ValueTask ApplyUpdateModelAsync(
         TEntity entity,
         TUpdateModel model,
@@ -104,11 +100,11 @@ public abstract partial class CrudController<
             $"или соответствующий update action.");
 
     /// <summary>
-    /// Создаёт update-модель из текущего состояния entity перед JSON Patch.
+    /// Creates update model async.
     /// </summary>
-    /// <param name="entity">Текущая entity.</param>
-    /// <param name="cancellationToken">Токен отмены.</param>
-    /// <returns>Модель обновления.</returns>
+    /// <param name="entity">The entity value.</param>
+    /// <param name="cancellationToken">A token that cancels this operation.</param>
+    /// <returns>The created value.</returns>
     protected virtual ValueTask<TUpdateModel> CreateUpdateModelAsync(
         TEntity entity,
         CancellationToken cancellationToken) =>

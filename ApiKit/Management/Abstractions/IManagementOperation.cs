@@ -1,18 +1,18 @@
 namespace ApiKit.Management.Abstractions;
 
 /// <summary>
-/// Представляет явно разрешённую произвольную management-операцию сервиса.
+/// Defines the contract for i management operation.
 /// </summary>
-/// <typeparam name="TRequest">Тип входных данных.</typeparam>
-/// <typeparam name="TResult">Тип результата.</typeparam>
+/// <typeparam name="TRequest">The t request type.</typeparam>
+/// <typeparam name="TResult">The t result type.</typeparam>
 public interface IManagementOperation<in TRequest, TResult>
 {
     /// <summary>
-    /// Выполняет management-операцию.
+    /// Executes async.
     /// </summary>
-    /// <param name="request">Входные данные.</param>
-    /// <param name="cancellationToken">Токен отмены.</param>
-    /// <returns>Результат операции.</returns>
+    /// <param name="request">The operation request.</param>
+    /// <param name="cancellationToken">A token that cancels this operation.</param>
+    /// <returns>The result of the operation.</returns>
     ValueTask<TResult> ExecuteAsync(
         TRequest request,
         CancellationToken cancellationToken = default);

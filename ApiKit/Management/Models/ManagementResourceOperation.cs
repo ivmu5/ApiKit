@@ -1,25 +1,37 @@
 namespace ApiKit.Management.Models;
 
 /// <summary>
-/// Тип стандартной операции над управляемым CRUD-ресурсом.
+/// Defines the available states for management resource operation.
 /// </summary>
 public enum ManagementResourceOperation
 {
-    /// <summary>Получение списка ресурсов.</summary>
+    /// <summary>
+    /// Represents the list resource operation.
+    /// </summary>
     List,
 
-    /// <summary>Получение одного ресурса.</summary>
+    /// <summary>
+    /// Represents the get resource operation.
+    /// </summary>
     Get,
 
-    /// <summary>Создание ресурса.</summary>
+    /// <summary>
+    /// Represents the create resource operation.
+    /// </summary>
     Create,
 
-    /// <summary>Полное обновление ресурса.</summary>
+    /// <summary>
+    /// Represents the update resource operation.
+    /// </summary>
     Update,
 
-    /// <summary>Частичное обновление ресурса.</summary>
+    /// <summary>
+    /// Represents the patch resource operation.
+    /// </summary>
     Patch,
 
-    /// <summary>Удаление ресурса.</summary>
+    /// <summary>
+    /// Defines the management or application behavior of management resource operation.
+    /// </summary>
     Delete
 }
